@@ -5,10 +5,18 @@ public class Player : MonoBehaviour
     [Header("Animator")]
     [SerializeField] Animator animator;
 
+    [Header("Movement")]
+    [SerializeField] Rigidbody rigidbody;
+    [SerializeField][Range(0, 100)] float speed;
+    [SerializeField][Range(0, 100)] float moveWidth;
+    [SerializeField][Range(0, 100)] float jumpPower;
+    [SerializeField][Range(0, 100)] float landHeight;
+
 #if UNITY_EDITOR
     private void Reset()
     {
         animator = GameObject.Find("Root").GetComponent<Animator>();
+        rigidbody = GameObject.Find("Player").GetComponent<Rigidbody>();
     }
 #endif
 
