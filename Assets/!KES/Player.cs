@@ -4,9 +4,6 @@ public class Player : MonoBehaviour
 {
     [Header("Animator")]
     [SerializeField] Animator animator;
-    [SerializeField] bool isJump = false;
-    [SerializeField] bool isSlide = false;
-    [SerializeField] bool isDead = false;
 
 #if UNITY_EDITOR
     private void Reset()
@@ -19,47 +16,36 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            if (!isDead)
-                if (!isJump)
-                {
-                    isJump = true;
-                    isSlide = false;
-                }
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            if (!isDead)
-                if (isSlide)
-                    isSlide = false;
+            Debug.Log("점프");
+            animator.SetBool("isJump", true);
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
-            if (!isDead)
-                if (!isSlide)
-                {
-                    isJump = false;
-                    isSlide = true;
-                }
+            Debug.Log("슬라이드");
+            animator.SetBool("isJump", false);
+            animator.SetBool("isSlide", true);
         }
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
         {
-            if (!isDead)
-                if (isSlide)
-                    isSlide = false;
-        }
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            isDead = true;
+            Debug.Log("좌 또는 우 이동");
+            animator.SetBool("isSlide", false);
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            isJump = false;
-            isSlide = false;
-            isDead = false;
+            Debug.Log("상태 초기화, 디버그용");
+            animator.SetBool("isJump", false);
+            animator.SetBool("isSlide", false);
+            animator.SetBool("isDead", false);
         }
-
-        animator.SetBool("isJump", isJump);
-        animator.SetBool("isSlide", isSlide);
-        animator.SetBool("isDead", isDead);
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            Debug.Log("게임 오버");
+            animator.SetBool("isDead", true);
+        }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Debug.Log("땅에 닿았다.");
+            animator.SetBool("isJump", false);
+        }
     }
 }
