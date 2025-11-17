@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Tooltip("슬라이딩 콜라이더 크기")] Vector2 slideCollider;
 
     [Header("Debug")]
-    [SerializeField] bool isDie = false; // 플레이어 사망시 해당 변수 전환
+    [SerializeField] bool isDead = false; // 플레이어 사망시 해당 변수 전환
     [SerializeField] bool isJump = false;
     [SerializeField] bool isAirborne = false;
     [SerializeField] bool isSlide = false;
@@ -156,7 +156,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("상태 초기화, 디버그용");
 
-            isDie = false;
+            isDead = false;
             isJump = false;
             isAirborne = false;
             isSlide = false;
@@ -173,7 +173,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.X))
         {
             Debug.Log("게임 오버");
-            isDie = true;
+            isDead = true;
             OnPlayerDead?.Invoke();
             animator.SetBool("isDead", true);
         }
@@ -183,30 +183,11 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isJump", false);
         }
 #endif
-
-#if UNITY_EDITOR // 보간 테스트
-        /*보간 테스트*/
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            Vector3 testA = Vector3.MoveTowards(
-                new Vector3(0, 0, 0),
-                new Vector3(1, 1, 1),
-                Time.deltaTime);
-
-            Vector3 testB = Vector3.MoveTowards(
-                new Vector3(0, 0, 0),
-                new Vector3(1, 0, 1),
-                Time.deltaTime);
-
-            Debug.Log($"x = {testA.x}, y = {testA.y}, z = {testA.z}");
-            Debug.Log($"x = {testB.x}, y = {testB.y}, z = {testB.z}");
-        }
-#endif
     }
 
     private void FixedUpdate()
     {
-        if (isDie)
+        if (isDead)
         {
             rb.velocity = Vector3.zero;
             rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
@@ -301,6 +282,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isJump", true);
         }
 
+        ChangeColliderSize();
 
 #if UNITY_EDITOR // 디버그 전용 속성
             currentVelocity = rb.velocity;
@@ -361,30 +343,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-#if UNITY_EDITOR
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.green;
-    //    Gizmos.DrawLine(
-    //        rb.position + (Vector3.forward * rayRadius) + (Vector3.up * rayHeight),
-    //        rb.position + (Vector3.forward * rayRadius) + (Vector3.down * landDistance)
-    //    );
-    //    Gizmos.DrawLine(
-    //        rb.position + (Vector3.back * rayRadius) + (Vector3.up * rayHeight),
-    //        rb.position + (Vector3.back * rayRadius) + (Vector3.down * landDistance)
-    //    );
-    //    Gizmos.DrawLine(
-    //        rb.position + (Vector3.right * rayRadius) + (Vector3.up * rayHeight),
-    //        rb.position + (Vector3.right * rayRadius) + (Vector3.down * landDistance)
-    //    );
-    //    Gizmos.DrawLine(
-    //        rb.position + (Vector3.left * rayRadius) + (Vector3.up * rayHeight),
-    //        rb.position + (Vector3.left * rayRadius) + (Vector3.down * landDistance)
-    //    );
-    //}
-#endif
-
     #endregion
 
     #region Trigger/Collision
@@ -395,8 +353,9 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.layer == 7)
         {
-            isDie = true;
+            isDead = true;
             animator.SetBool("isDead", true);
+            OnPlayerDead?.Invoke();
         }
     }
 
