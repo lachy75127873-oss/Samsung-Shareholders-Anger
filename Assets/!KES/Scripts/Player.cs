@@ -21,10 +21,12 @@ public class Player : MonoBehaviour
     [SerializeField][Tooltip("착지 판정 레이어 마스크")] LayerMask groundLayerMask;
     [SerializeField][Range(1, 100)][Tooltip("레이캐스트 간격")] float rayRadius;
     [SerializeField][Range(0, 5)][Tooltip("레이캐스트 높이")] float startRayY;
+    [SerializeField][Range(0, 1000)][Tooltip("레이캐스트 높이")] float slidDownSpeed;
 
     [Header("Debug")]
     [SerializeField] bool isJump = false;
     [SerializeField] bool isAirborne = false;
+    [SerializeField] bool isSlide = false;
     [SerializeField] float airborneTimer = 0f;
     [SerializeField][Tooltip("좌우 이동용 Pos")] Vector3 targetMovePos;
     [SerializeField][Tooltip("점프 시점 기억용 Pos")] Vector3 beforeJumpPos;
@@ -66,14 +68,24 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            if (!isJump)
+            if (!isJump && !isAirborne)
+            {
+                isSlide = false;
                 isJump = true;
+            }
 
             animator.SetBool("isJump", true);
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
             Debug.Log("슬라이드");
+
+            if (!isSlide)
+            {
+                isJump = false;
+                rb.useGravity = true;
+                isSlide = true;
+            }
 
             animator.SetBool("isJump", false);
             animator.SetBool("isSlide", true);
@@ -96,13 +108,19 @@ public class Player : MonoBehaviour
                 currentRail++;
                 targetMovePos += Vector3.right * sideMoveDistance;
             }
+            isSlide = false;
             animator.SetBool("isSlide", false);
         }
 
+        /*CheckJumpEnd*/
         if (CheckGround())
         {
             animator.SetBool("isJump", false);
         }
+
+        /*CheckSlideEnd*/
+        if(!animator.GetBool("isSlide"))
+            isSlide = false;
 
 #if UNITY_EDITOR // 디버그 전용 인풋
 
@@ -147,9 +165,6 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        /*ForwardMove*/
-        rb.velocity = new(rb.velocity.x, rb.velocity.y, runSpeed);
-
         /*Jump*/
         if (isJump)
         {
@@ -169,14 +184,14 @@ public class Player : MonoBehaviour
             isAirborne = true;
             rb.useGravity = false;
 
-            Debug.Log("Checked MaxHeight");
+            //Debug.Log("Checked MaxHeight");
         }
 
         /*Airborne*/
         if (isAirborne)
         {
             airborneTimer += Time.fixedDeltaTime;
-            Debug.Log("airborneTimer");
+            //Debug.Log("airborneTimer");
 
             if (airborneTimer >= airborneTime)
             {
@@ -189,10 +204,18 @@ public class Player : MonoBehaviour
             }
         }
 
-        if(rb.velocity.y < 0)
+        if (isSlide)
+        {
+            isJump = false;
+            isAirborne = false;
+            //rb.velocity += slidDownSpeed * Time.fixedDeltaTime * Vector3.down;
+            rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
+        }
+
+        if (rb.velocity.y < 0 && !isSlide)
         {
             rb.velocity += fallAccel * Time.fixedDeltaTime * Vector3.down;
-            Debug.Log("Falling");
+            //Debug.Log("Falling");
         }
 
         /*SideMove*/
@@ -206,9 +229,13 @@ public class Player : MonoBehaviour
 
             var next = rb.position;
             next.x = nextX;
-
             rb.MovePosition(next);
         }
+
+        /*ForwardMove*/
+        //rb.velocity = new(rb.velocity.x, rb.velocity.y, runSpeed);
+        rb.MovePosition(rb.position + runSpeed * Time.fixedDeltaTime * Vector3.forward);
+
 
 #if UNITY_EDITOR // 디버그 전용 속성
         currentVelocity = rb.velocity;
