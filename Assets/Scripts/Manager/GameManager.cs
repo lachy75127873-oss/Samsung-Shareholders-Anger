@@ -4,9 +4,20 @@ using UnityEngine;
 
 public class GameManager
 {
-    public void Init() // 매니저 초기화 이곳에서
+    //게임 매니저 초기화 로직
+    public void Init() 
     {
-
+        Debug.Log("GameManager initialized");
+        
+        TempSetReady(); 
     }
+    
+    //게임 매니저 초기화 로직
+    private void TempSetReady() 
+    {
+        Debug.Log("기본 세팅 완료");
+        
+    }
+    
 }
 
