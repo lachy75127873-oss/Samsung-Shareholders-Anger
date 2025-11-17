@@ -1,5 +1,5 @@
+using System;
 using UnityEngine;
-
 
 public class Player : MonoBehaviour
 {
@@ -8,36 +8,48 @@ public class Player : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] Rigidbody rb;
-    [SerializeField] CapsuleCollider capsuleCollider;
     [SerializeField][Range(0, 1000)][Tooltip("달리기 속도")] float runSpeed;
+
+    [Header("Side")]
+    [SerializeField][Range(-1, 1)][Tooltip("현재 위치한 레일")] int currentRail;
     [SerializeField][Range(0, 100)][Tooltip("좌우 이동 속도")] float sideMoveSpeed;
     [SerializeField][Range(0, 100)][Tooltip("좌우 이동 간격")] float sideMoveDistance;
-    [SerializeField][Range(-1, 1)][Tooltip("현재 위치한 레일")] int currentRail;
+
+    [Header("Jump")]
     [SerializeField][Range(1, 1000)][Tooltip("점프 파워")] float jumpPower;
     [SerializeField][Range(1, 100)][Tooltip("점프 높이")] float MaxHeight;
     [SerializeField][Range(0, 10)][Tooltip("공중에 머무는 시간")] float airborneTime;
+
+    [Header("Fall")]
     [SerializeField][Range(0, -100)][Tooltip("하강 시작 속도")] float velocityY;
-    [SerializeField][Range(0, 100)][Tooltip("하강 속도 보정")] float fallAccel;
+    [SerializeField][Range(0, 100)][Tooltip("하강 속도 가속")] float fallAccel;
     [SerializeField][Range(0, 10)][Tooltip("착지 판정 높이")] float landDistance;
     [SerializeField][Tooltip("착지 판정 레이어 마스크")] LayerMask groundLayerMask;
-    [SerializeField][Range(1, 100)][Tooltip("레이캐스트 간격")] float rayRadius;
-    [SerializeField][Range(0, 5)][Tooltip("레이캐스트 높이")] float startRayY;
-    [SerializeField][Range(0, 1000)][Tooltip("레이캐스트 높이")] float slidDownSpeed;
-    [SerializeField] Vector2 defaultCollider;
-    [SerializeField] Vector2 slideCollider;
+    [SerializeField][Range(1, 100)][Tooltip("RayCast 간격")] float rayRadius;
+    [SerializeField][Range(0, 5)][Tooltip("RayCast 시작 높이")] float startRayY;
+
+    [Header("Slide")]
+    [SerializeField] CapsuleCollider capsuleCollider;
+    [SerializeField][Range(0, 1000)][Tooltip("공중에서 슬라이드시 내려오는 속도")] float slidDownSpeed;
+    [SerializeField][Tooltip("보통의 콜라이더 크기")] Vector2 defaultCollider;
+    [SerializeField][Tooltip("슬라이딩 콜라이더 크기")] Vector2 slideCollider;
 
     [Header("Debug")]
+    [SerializeField] bool isDie = false; // 플레이어 사망시 해당 변수 전환
     [SerializeField] bool isJump = false;
     [SerializeField] bool isAirborne = false;
     [SerializeField] bool isSlide = false;
     [SerializeField] float airborneTimer = 0f;
-    [SerializeField] bool StopRun = false;
     [SerializeField][Tooltip("좌우 이동용 Pos")] Vector3 targetMovePos;
     [SerializeField][Tooltip("점프 시점 기억용 Pos")] Vector3 beforeJumpPos;
 #if UNITY_EDITOR
+    [SerializeField] bool StopRun = false;
     [SerializeField][Tooltip("현재 Pos Debug용")] Vector3 currentPos;
     [SerializeField][Tooltip("현재 Velocity Debug용")] Vector3 currentVelocity;
 #endif
+
+    /*플레이어 사망시 호출*/
+    public event Action OnPlayerDead;
 
 #if UNITY_EDITOR
     private void Reset()
@@ -74,6 +86,8 @@ public class Player : MonoBehaviour
         targetMovePos = rb.position;
     }
 
+    #region Movement
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.W))
@@ -89,8 +103,6 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
-            Debug.Log("슬라이드");
-
             if (!isSlide)
             {
                 isJump = false;
@@ -142,6 +154,17 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             Debug.Log("상태 초기화, 디버그용");
+
+            isDie = false;
+            isJump = false;
+            isAirborne = false;
+            isSlide = false;
+            airborneTimer = default;
+            currentRail = default;
+            transform.position = default;
+            rb.position = default;
+            rb.useGravity = true;
+
             animator.SetBool("isJump", false);
             animator.SetBool("isSlide", false);
             animator.SetBool("isDead", false);
@@ -149,6 +172,8 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.X))
         {
             Debug.Log("게임 오버");
+            isDie = true;
+            OnPlayerDead?.Invoke();
             animator.SetBool("isDead", true);
         }
         if (Input.GetKeyDown(KeyCode.Q))
@@ -180,6 +205,13 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isDie)
+        {
+            rb.velocity = Vector3.zero;
+            rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
+            return;
+        }
+
         /*Jump*/
         if (isJump)
         {
@@ -247,12 +279,18 @@ public class Player : MonoBehaviour
             rb.MovePosition(next);
         }
 
+#if UNITY_EDITOR 
         /*ForwardMove*/
         if (!StopRun)
         {
+#endif
             //rb.velocity = new(rb.velocity.x, rb.velocity.y, runSpeed);
             rb.MovePosition(rb.position + runSpeed * Time.fixedDeltaTime * Vector3.forward);
+
+#if UNITY_EDITOR
+
         }
+#endif
 
 #if UNITY_EDITOR // 디버그 전용 속성
         currentVelocity = rb.velocity;
@@ -260,6 +298,9 @@ public class Player : MonoBehaviour
 #endif
     }
 
+    /// <summary>
+    /// Raycast를 통해 플레이어 착지 판단
+    /// </summary>
     bool CheckGround()
     {
         Ray[] rays = new Ray[4]
@@ -286,7 +327,7 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// 캐릭터 상태에 따라 콜라이더 사이즈를 변경
+    /// 슬라이딩 여부에 따라 콜라이더 사이즈를 변경
     /// </summary>
     void ChangeColliderSize()
     {
@@ -307,7 +348,6 @@ public class Player : MonoBehaviour
                 capsuleCollider.center.z
             );
             capsuleCollider.height = defaultCollider.y;
-
         }
     }
 
@@ -334,4 +374,20 @@ public class Player : MonoBehaviour
     //    );
     //}
 #endif
+
+    #endregion
+
+    #region Trigger/Collision
+
+    private void OnTriggerEnter(Collider other)
+    {
+        
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+    }
+
+    #endregion
 }
