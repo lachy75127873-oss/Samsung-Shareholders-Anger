@@ -1702,7 +1702,7 @@ GameObject:
   - component: {fileID: 7516458619567678527}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1738,10 +1738,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 7598205392512811725}
   rb: {fileID: 3220018429599094685}
-  runSpeed: 31
+  runSpeed: 30
+  currentRail: 0
   sideMoveSpeed: 100
   sideMoveDistance: 30
-  currentRail: 0
   jumpPower: 200
   MaxHeight: 30
   airborneTime: 3
@@ -1753,13 +1753,18 @@ MonoBehaviour:
     m_Bits: 1
   rayRadius: 3.2
   startRayY: 2.7
+  capsuleCollider: {fileID: 7516458619567678527}
   slidDownSpeed: 400
+  defaultCollider: {x: 1.8, y: 3.6}
+  slideCollider: {x: 0.8, y: 1.5}
+  isDie: 0
   isJump: 0
   isAirborne: 0
   isSlide: 0
   airborneTimer: 0
   targetMovePos: {x: 0, y: 0, z: 0}
   beforeJumpPos: {x: 0, y: 0, z: 0}
+  StopRun: 0
   currentPos: {x: 0, y: 0, z: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
 --- !u!54 &3220018429599094685
