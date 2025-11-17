@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem.Processors;
 
 public class PlayerController : MonoBehaviour
 {
@@ -23,10 +24,10 @@ public class PlayerController : MonoBehaviour
     [Header("Fall")]
     [SerializeField][Range(0, -100)][Tooltip("하강 시작 속도")] float velocityY;
     [SerializeField][Range(0, 100)][Tooltip("하강 속도 가속")] float fallAccel;
-    [SerializeField][Range(0, 10)][Tooltip("착지 판정 높이")] float landDistance;
+    [SerializeField][Range(0, 1)][Tooltip("착지 판정 높이")] float landDistance;
     [SerializeField][Tooltip("착지 판정 레이어 마스크")] LayerMask groundLayerMask;
-    [SerializeField][Range(1, 100)][Tooltip("RayCast 간격")] float rayRadius;
-    [SerializeField][Range(0, 5)][Tooltip("RayCast 시작 높이")] float startRayY;
+    [SerializeField][Range(0, 1)][Tooltip("RayCast 간격")] float rayRadius;
+    [SerializeField][Range(0, 1)][Tooltip("RayCast 시작 높이")] float startRayY;
 
     [Header("Slide")]
     [SerializeField] CapsuleCollider capsuleCollider;
@@ -97,11 +98,9 @@ public class PlayerController : MonoBehaviour
             {
                 isSlide = false;
                 isJump = true;
-                ChangeColliderSize();
                 //ChangeColliderSize();
+                //animator.SetBool("isJump", true);
             }
-
-            animator.SetBool("isJump", true);
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -110,11 +109,10 @@ public class PlayerController : MonoBehaviour
                 isJump = false;
                 rb.useGravity = true;
                 isSlide = true;
-                ChangeColliderSize();
                 //ChangeColliderSize();
             }
 
-            animator.SetBool("isJump", false);
+            //animator.SetBool("isJump", false);
             animator.SetBool("isSlide", true);
         }
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
@@ -139,17 +137,16 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isSlide", false);
         }
 
-        /*CheckJumpEnd*/
-        if (CheckGround())
-        {
-            animator.SetBool("isJump", false);
-        }
+        ///*CheckJumpEnd*/
+        //if (CheckGround())
+        //{
+        //    animator.SetBool("isJump", false);
+        //}
 
         /*CheckSlideEnd*/
         if (!animator.GetBool("isSlide"))
         {
             isSlide = false;
-            ChangeColliderSize();
             //ChangeColliderSize();
         }
 
@@ -221,9 +218,6 @@ public class PlayerController : MonoBehaviour
         {
             beforeJumpPos = rb.position;
             rb.AddForce(jumpPower * Vector3.up, ForceMode.Impulse);
-            isJump = false;
-
-            Debug.Log("isJump");
         }
 
         /*Checked MaxHeight*/
@@ -296,8 +290,20 @@ public class PlayerController : MonoBehaviour
         }
 #endif
 
+        /*CheckJumpEnd*/
+        if (CheckGround())
+        {
+            isJump = false;
+            animator.SetBool("isJump", false);
+        }
+        else
+        {
+            animator.SetBool("isJump", true);
+        }
+
+
 #if UNITY_EDITOR // 디버그 전용 속성
-        currentVelocity = rb.velocity;
+            currentVelocity = rb.velocity;
         currentPos = rb.position;
 #endif
     }
@@ -385,12 +391,17 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        
+        Debug.Log("트리거");
+
+        if (other.gameObject.layer == 7)
+        {
+            isDie = true;
+            animator.SetBool("isDead", true);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        
     }
 
     #endregion
