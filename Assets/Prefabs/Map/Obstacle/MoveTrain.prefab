@@ -299,7 +299,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  activationDistance: 0
+  activationDistance: 30
   isActivation: 0
 --- !u!1 &3770035699678819263
 GameObject:
