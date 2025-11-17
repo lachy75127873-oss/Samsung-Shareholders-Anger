@@ -8,16 +8,16 @@ public class GameManager
     public void Init() 
     {
         Debug.Log("GameManager initialized");
-        
-        TempSetReady(); 
+         
     }
     
-    //게임 매니저 초기화 로직
-    private void TempSetReady() 
+    //Main_Title 이전 로딩씬 
+    public void ReadyMain() 
     {
-        Debug.Log("기본 세팅 완료");
-        
+        Debug.Log("GameManager - 중단된 게임 여부 체크");
     }
+    
+    
     
 }
 
