@@ -8,7 +8,6 @@ public class Player : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] Rigidbody rb;
-    [SerializeField] CapsuleCollider capsuleCollider;
     [SerializeField][Range(0, 1000)][Tooltip("달리기 속도")] float runSpeed;
     [SerializeField][Range(0, 100)][Tooltip("좌우 이동 속도")] float sideMoveSpeed;
     [SerializeField][Range(0, 100)][Tooltip("좌우 이동 간격")] float sideMoveDistance;
@@ -29,17 +28,19 @@ public class Player : MonoBehaviour
     [SerializeField] float airborneTimer = 0f;
     [SerializeField][Tooltip("좌우 이동용 Pos")] Vector3 targetMovePos;
     [SerializeField][Tooltip("점프 시점 기억용 Pos")] Vector3 beforeJumpPos;
+#if UNITY_EDITOR
     [SerializeField][Tooltip("현재 Pos Debug용")] Vector3 currentPos;
     [SerializeField][Tooltip("현재 Velocity Debug용")] Vector3 currentVelocity;
+#endif
 
 #if UNITY_EDITOR
     private void Reset()
     {
         animator = GameObject.Find("Root").GetComponent<Animator>();
         rb = GameObject.Find("Player").GetComponent<Rigidbody>();
-        capsuleCollider = GameObject.Find("Player").GetComponent<CapsuleCollider>();
 
-        /*초기 값 세팅*/
+        #region /*초기 값 세팅*/
+
         sideMoveSpeed = 100f;
         sideMoveDistance = 30f;
         currentRail = default;
@@ -52,6 +53,7 @@ public class Player : MonoBehaviour
         groundLayerMask = LayerMask.GetMask("Default");
         rayRadius = 3.2f;
         startRayY = 2.7f;
+        #endregion
     }
 #endif
 
@@ -64,8 +66,6 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            Debug.Log("점프");
-
             if (!isJump)
                 isJump = true;
 
@@ -85,7 +85,6 @@ public class Player : MonoBehaviour
                 if (currentRail == -1)
                     return;
 
-                //Debug.Log("좌 이동");
                 currentRail--;
                 targetMovePos += Vector3.left * sideMoveDistance;
             }
@@ -94,12 +93,19 @@ public class Player : MonoBehaviour
                 if (currentRail == 1)
                     return;
 
-                //Debug.Log("우 이동");
                 currentRail++;
                 targetMovePos += Vector3.right * sideMoveDistance;
             }
             animator.SetBool("isSlide", false);
         }
+
+        if (CheckGround())
+        {
+            animator.SetBool("isJump", false);
+        }
+
+#if UNITY_EDITOR // 디버그 전용 인풋
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             Debug.Log("상태 초기화, 디버그용");
@@ -117,13 +123,9 @@ public class Player : MonoBehaviour
             Debug.Log("땅에 닿았다.");
             animator.SetBool("isJump", false);
         }
+#endif
 
-        if (CheckGround())
-        {
-            animator.SetBool("isJump", false);
-        }
-
-#if false // 보간 테스트
+#if UNITY_EDITOR // 보간 테스트
         /*보간 테스트*/
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -145,6 +147,9 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        /*ForwardMove*/
+        rb.velocity = new(rb.velocity.x, rb.velocity.y, runSpeed);
+
         /*Jump*/
         if (isJump)
         {
@@ -205,9 +210,10 @@ public class Player : MonoBehaviour
             rb.MovePosition(next);
         }
 
-        /*Debug*/
+#if UNITY_EDITOR // 디버그 전용 속성
         currentVelocity = rb.velocity;
         currentPos = rb.position;
+#endif
     }
 
     bool CheckGround()
@@ -222,7 +228,8 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < rays.Length; i++)
         {
-#if UNITY_EDITOR_64
+#if UNITY_EDITOR
+
             Debug.DrawRay(rays[i].origin, rays[i].direction * landDistance, Color.green);
 #endif
             if (Physics.Raycast(rays[i], landDistance, groundLayerMask))
