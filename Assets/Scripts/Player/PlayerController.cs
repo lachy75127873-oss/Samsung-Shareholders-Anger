@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
     public event Action OnPlayerDead;
 
 #if UNITY_EDITOR
+
     private void Reset()
     {
         animator = GameObject.Find("Root").GetComponent<Animator>();
@@ -97,6 +98,7 @@ public class PlayerController : MonoBehaviour
                 isSlide = false;
                 isJump = true;
                 ChangeColliderSize();
+                //ChangeColliderSize();
             }
 
             animator.SetBool("isJump", true);
@@ -109,6 +111,7 @@ public class PlayerController : MonoBehaviour
                 rb.useGravity = true;
                 isSlide = true;
                 ChangeColliderSize();
+                //ChangeColliderSize();
             }
 
             animator.SetBool("isJump", false);
@@ -147,6 +150,7 @@ public class PlayerController : MonoBehaviour
         {
             isSlide = false;
             ChangeColliderSize();
+            //ChangeColliderSize();
         }
 
 #if UNITY_EDITOR // 디버그 전용 인풋
