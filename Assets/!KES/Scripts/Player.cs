@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] Rigidbody rb;
+    [SerializeField] CapsuleCollider capsuleCollider;
     [SerializeField][Range(0, 1000)][Tooltip("달리기 속도")] float runSpeed;
     [SerializeField][Range(0, 100)][Tooltip("좌우 이동 속도")] float sideMoveSpeed;
     [SerializeField][Range(0, 100)][Tooltip("좌우 이동 간격")] float sideMoveDistance;
@@ -22,12 +23,15 @@ public class Player : MonoBehaviour
     [SerializeField][Range(1, 100)][Tooltip("레이캐스트 간격")] float rayRadius;
     [SerializeField][Range(0, 5)][Tooltip("레이캐스트 높이")] float startRayY;
     [SerializeField][Range(0, 1000)][Tooltip("레이캐스트 높이")] float slidDownSpeed;
+    [SerializeField] Vector2 defaultCollider;
+    [SerializeField] Vector2 slideCollider;
 
     [Header("Debug")]
     [SerializeField] bool isJump = false;
     [SerializeField] bool isAirborne = false;
     [SerializeField] bool isSlide = false;
     [SerializeField] float airborneTimer = 0f;
+    [SerializeField] bool StopRun = false;
     [SerializeField][Tooltip("좌우 이동용 Pos")] Vector3 targetMovePos;
     [SerializeField][Tooltip("점프 시점 기억용 Pos")] Vector3 beforeJumpPos;
 #if UNITY_EDITOR
@@ -40,9 +44,11 @@ public class Player : MonoBehaviour
     {
         animator = GameObject.Find("Root").GetComponent<Animator>();
         rb = GameObject.Find("Player").GetComponent<Rigidbody>();
+        capsuleCollider = GameObject.Find("Player").GetComponent<CapsuleCollider>();
 
         #region /*초기 값 세팅*/
 
+        runSpeed = 30f;
         sideMoveSpeed = 100f;
         sideMoveDistance = 30f;
         currentRail = default;
@@ -51,10 +57,14 @@ public class Player : MonoBehaviour
         airborneTime = 3f;
         velocityY = -1f;
         fallAccel = 20f;
-        landDistance = 2.6f;
+        landDistance = 2.65f;
         groundLayerMask = LayerMask.GetMask("Default");
         rayRadius = 3.2f;
         startRayY = 2.7f;
+        slidDownSpeed = 400f;
+        defaultCollider = new(1.8f, 3.6f);
+        slideCollider = new(0.8f, 1.5f);
+
         #endregion
     }
 #endif
@@ -72,6 +82,7 @@ public class Player : MonoBehaviour
             {
                 isSlide = false;
                 isJump = true;
+                ChangeColliderSize();
             }
 
             animator.SetBool("isJump", true);
@@ -85,6 +96,7 @@ public class Player : MonoBehaviour
                 isJump = false;
                 rb.useGravity = true;
                 isSlide = true;
+                ChangeColliderSize();
             }
 
             animator.SetBool("isJump", false);
@@ -119,8 +131,11 @@ public class Player : MonoBehaviour
         }
 
         /*CheckSlideEnd*/
-        if(!animator.GetBool("isSlide"))
+        if (!animator.GetBool("isSlide"))
+        {
             isSlide = false;
+            ChangeColliderSize();
+        }
 
 #if UNITY_EDITOR // 디버그 전용 인풋
 
@@ -233,9 +248,11 @@ public class Player : MonoBehaviour
         }
 
         /*ForwardMove*/
-        //rb.velocity = new(rb.velocity.x, rb.velocity.y, runSpeed);
-        rb.MovePosition(rb.position + runSpeed * Time.fixedDeltaTime * Vector3.forward);
-
+        if (!StopRun)
+        {
+            //rb.velocity = new(rb.velocity.x, rb.velocity.y, runSpeed);
+            rb.MovePosition(rb.position + runSpeed * Time.fixedDeltaTime * Vector3.forward);
+        }
 
 #if UNITY_EDITOR // 디버그 전용 속성
         currentVelocity = rb.velocity;
@@ -267,6 +284,33 @@ public class Player : MonoBehaviour
 
         return false;
     }
+
+    /// <summary>
+    /// 캐릭터 상태에 따라 콜라이더 사이즈를 변경
+    /// </summary>
+    void ChangeColliderSize()
+    {
+        if (isSlide)
+        {
+            capsuleCollider.center = new Vector3(
+                capsuleCollider.center.x,
+                slideCollider.x,
+                capsuleCollider.center.z
+            );
+            capsuleCollider.height = slideCollider.y;
+        }
+        else
+        {
+            capsuleCollider.center = new Vector3(
+                capsuleCollider.center.x,
+                defaultCollider.x,
+                capsuleCollider.center.z
+            );
+            capsuleCollider.height = defaultCollider.y;
+
+        }
+    }
+
 
 #if UNITY_EDITOR
     //private void OnDrawGizmos()
