@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5526977807915118209}
   - component: {fileID: 6453070676721321525}
-  m_Layer: 0
+  - component: {fileID: 3381751850301706603}
+  - component: {fileID: 5080585674670135300}
+  m_Layer: 7
   m_Name: StopTrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,6 +48,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c052aee37ffb844298c01b591d79050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &3381751850301706603
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1113916924400338814}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.2123059, y: 1.1110563, z: 4.9378057}
+  m_Center: {x: -0.00036627054, y: 0.5684836, z: 1.2597172}
+--- !u!65 &5080585674670135300
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1113916924400338814}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.39560843, z: 4.932434}
+  m_Center: {x: 0, y: 1.322535, z: 1.2609196}
 --- !u!1 &1347635426309620816
 GameObject:
   m_ObjectHideFlags: 0
@@ -57,7 +101,7 @@ GameObject:
   - component: {fileID: 6809973302512025391}
   - component: {fileID: 5096426406906404883}
   - component: {fileID: 8563272228647548234}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Train-B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,7 +186,7 @@ GameObject:
   - component: {fileID: 5764174525878247106}
   - component: {fileID: 8495129525939392900}
   - component: {fileID: 5656351891215602448}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: wheels-front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +269,7 @@ GameObject:
   - component: {fileID: 2678228564990680298}
   - component: {fileID: 2797228671531149854}
   - component: {fileID: 8659136276750633203}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: wheels-back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -308,7 +352,7 @@ GameObject:
   - component: {fileID: 3089645345224129377}
   - component: {fileID: 7215248507300620846}
   - component: {fileID: 4367920403453624951}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: wheels-back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -391,7 +435,7 @@ GameObject:
   - component: {fileID: 2039348831682234011}
   - component: {fileID: 5900526501521292796}
   - component: {fileID: 5443550436661204083}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Train_A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -476,7 +520,7 @@ GameObject:
   - component: {fileID: 8872126063386111010}
   - component: {fileID: 3565435225879423272}
   - component: {fileID: 8616461671330483408}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: wheels-front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
