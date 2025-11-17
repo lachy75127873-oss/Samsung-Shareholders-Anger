@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] Rigidbody rb;
+    [SerializeField] CapsuleCollider capsuleCollider;
     [SerializeField][Range(0, 1000)][Tooltip("달리기 속도")] float runSpeed;
     [SerializeField][Range(0, 100)][Tooltip("좌우 이동 속도")] float sideMoveSpeed;
     [SerializeField][Range(0, 100)][Tooltip("좌우 이동 간격")] float sideMoveDistance;
@@ -15,23 +16,30 @@ public class Player : MonoBehaviour
     [SerializeField][Range(1, 1000)][Tooltip("점프 파워")] float jumpPower;
     [SerializeField][Range(1, 100)][Tooltip("점프 높이")] float MaxHeight;
     [SerializeField][Range(0, 10)][Tooltip("공중에 머무는 시간")] float airborneTime;
-    [SerializeField][Range(0, -100)][Tooltip("하강 시작 가속도")] float velocityY;
-    [SerializeField][Range(0, 10)][Tooltip("하강 속도 보정")] float gravityCorrection;
-    [SerializeField][Range(0, 100)][Tooltip("착지 판정 높이")] float landDistance;
+    [SerializeField][Range(0, -100)][Tooltip("하강 시작 속도")] float velocityY;
+    [SerializeField][Range(0, 100)][Tooltip("하강 속도 보정")] float fallAccel;
+    [SerializeField][Range(0, 10)][Tooltip("착지 판정 높이")] float landDistance;
+    [SerializeField][Tooltip("착지 판정 레이어 마스크")] LayerMask groundLayerMask;
+    [SerializeField][Range(1, 100)][Tooltip("레이캐스트 간격")] float rayRadius;
+    [SerializeField][Range(0, 5)][Tooltip("레이캐스트 높이")] float startRayY;
 
     [Header("Debug")]
-    [SerializeField] Vector3 targetMovePos;
     [SerializeField] bool isJump = false;
     [SerializeField] bool isAirborne = false;
     [SerializeField] float airborneTimer = 0f;
-    [SerializeField] Vector3 currentVelocity;
+    [SerializeField][Tooltip("좌우 이동용 Pos")] Vector3 targetMovePos;
+    [SerializeField][Tooltip("점프 시점 기억용 Pos")] Vector3 beforeJumpPos;
+    [SerializeField][Tooltip("현재 Pos Debug용")] Vector3 currentPos;
+    [SerializeField][Tooltip("현재 Velocity Debug용")] Vector3 currentVelocity;
 
 #if UNITY_EDITOR
     private void Reset()
     {
         animator = GameObject.Find("Root").GetComponent<Animator>();
         rb = GameObject.Find("Player").GetComponent<Rigidbody>();
+        capsuleCollider = GameObject.Find("Player").GetComponent<CapsuleCollider>();
 
+        /*초기 값 세팅*/
         sideMoveSpeed = 100f;
         sideMoveDistance = 30f;
         currentRail = default;
@@ -39,6 +47,11 @@ public class Player : MonoBehaviour
         MaxHeight = 30f;
         airborneTime = 3f;
         velocityY = -1f;
+        fallAccel = 20f;
+        landDistance = 2.6f;
+        groundLayerMask = LayerMask.GetMask("Default");
+        rayRadius = 3.2f;
+        startRayY = 2.7f;
     }
 #endif
 
@@ -105,6 +118,12 @@ public class Player : MonoBehaviour
             animator.SetBool("isJump", false);
         }
 
+        if (CheckGround())
+        {
+            animator.SetBool("isJump", false);
+        }
+
+#if false // 보간 테스트
         /*보간 테스트*/
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -121,6 +140,7 @@ public class Player : MonoBehaviour
             Debug.Log($"x = {testA.x}, y = {testA.y}, z = {testA.z}");
             Debug.Log($"x = {testB.x}, y = {testB.y}, z = {testB.z}");
         }
+#endif
     }
 
     private void FixedUpdate()
@@ -128,23 +148,30 @@ public class Player : MonoBehaviour
         /*Jump*/
         if (isJump)
         {
+            beforeJumpPos = rb.position;
             rb.AddForce(jumpPower * Vector3.up, ForceMode.Impulse);
             isJump = false;
+
+            Debug.Log("isJump");
         }
 
-        if (rb.position.y > MaxHeight)
+        /*Checked MaxHeight*/
+        if (rb.position.y > beforeJumpPos.y + MaxHeight)
         {
             rb.velocity = new(rb.velocity.x, default, rb.velocity.z);
-            rb.position = new(rb.position.x, MaxHeight, rb.position.z);
+            rb.position = new(rb.position.x, beforeJumpPos.y + MaxHeight, rb.position.z);
             /*Airborne*/
             isAirborne = true;
             rb.useGravity = false;
+
+            Debug.Log("Checked MaxHeight");
         }
 
         /*Airborne*/
         if (isAirborne)
         {
             airborneTimer += Time.fixedDeltaTime;
+            Debug.Log("airborneTimer");
 
             if (airborneTimer >= airborneTime)
             {
@@ -152,7 +179,15 @@ public class Player : MonoBehaviour
                 rb.useGravity = true;
                 airborneTimer = default;
                 rb.velocity = new(rb.velocity.x, velocityY, rb.velocity.z);
+
+                Debug.Log("Airborne End");
             }
+        }
+
+        if(rb.velocity.y < 0)
+        {
+            rb.velocity += fallAccel * Time.fixedDeltaTime * Vector3.down;
+            Debug.Log("Falling");
         }
 
         /*SideMove*/
@@ -172,5 +207,53 @@ public class Player : MonoBehaviour
 
         /*Debug*/
         currentVelocity = rb.velocity;
+        currentPos = rb.position;
     }
+
+    bool CheckGround()
+    {
+        Ray[] rays = new Ray[4]
+        {
+            new(rb.position + (Vector3.forward * rayRadius) + (Vector3.up * startRayY), Vector3.down),
+            new(rb.position + (Vector3.back * rayRadius) + (Vector3.up * startRayY), Vector3.down),
+            new(rb.position + (Vector3.right * rayRadius) + (Vector3.up * startRayY), Vector3.down),
+            new(rb.position + (Vector3.left * rayRadius) + (Vector3.up * startRayY), Vector3.down)
+        };
+
+        for (int i = 0; i < rays.Length; i++)
+        {
+#if UNITY_EDITOR_64
+            Debug.DrawRay(rays[i].origin, rays[i].direction * landDistance, Color.green);
+#endif
+            if (Physics.Raycast(rays[i], landDistance, groundLayerMask))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+#if UNITY_EDITOR
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.green;
+    //    Gizmos.DrawLine(
+    //        rb.position + (Vector3.forward * rayRadius) + (Vector3.up * rayHeight),
+    //        rb.position + (Vector3.forward * rayRadius) + (Vector3.down * landDistance)
+    //    );
+    //    Gizmos.DrawLine(
+    //        rb.position + (Vector3.back * rayRadius) + (Vector3.up * rayHeight),
+    //        rb.position + (Vector3.back * rayRadius) + (Vector3.down * landDistance)
+    //    );
+    //    Gizmos.DrawLine(
+    //        rb.position + (Vector3.right * rayRadius) + (Vector3.up * rayHeight),
+    //        rb.position + (Vector3.right * rayRadius) + (Vector3.down * landDistance)
+    //    );
+    //    Gizmos.DrawLine(
+    //        rb.position + (Vector3.left * rayRadius) + (Vector3.up * rayHeight),
+    //        rb.position + (Vector3.left * rayRadius) + (Vector3.down * landDistance)
+    //    );
+    //}
+#endif
 }
