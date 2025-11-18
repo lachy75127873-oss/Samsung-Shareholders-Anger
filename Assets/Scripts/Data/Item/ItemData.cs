@@ -16,7 +16,7 @@ public class ItemData : ScriptableObject
 
     [Header("아이템 속성")]
     public ItemType itemType;
-    public int value; // 아이템 값
+    public int[] value; // 아이템 값
     public float duration; // 아이템 지속시간
 
     public enum ItemType
