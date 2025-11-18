@@ -27,6 +27,7 @@ public class SceneController : MonoBehaviour
         targetState = ScreenState.None;
     }
 
+    //sceneLoaded는 씬이 로드됐을 때의 상황을 전제
     private void SubscribeSceneManager()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -42,11 +43,8 @@ public class SceneController : MonoBehaviour
     {
         switch (scene.name)
         {
-            case "TempCDW": //시험용 코드
+            case "TempCDW": //예비 인트로 씬이라 가정
                 ToDoCDW();
-                break;
-            case "Loading":
-                OnLoadingScene();
                 break;
             case "Main_Title":
                 OnMainTitle();
@@ -62,11 +60,44 @@ public class SceneController : MonoBehaviour
     //"TempCDW"씬에서 실행 매서드
     private void ToDoCDW()
     {
-        Debug.Log("ToDoCDW");
+        Debug.Log("인트로 화면 동작 중");
+        //UI든 어디든 인트로 쪽에서 로딩씬 호출
         
         targetState = ScreenState.Main_Title;
         
-        SceneManager.LoadScene("Loading"); 
+        //로딩씬으로
+        OnLoadingScene();
+    }
+
+
+
+    //"Main_Title"Scene에서 실행 매서드
+    private void OnMainTitle()
+    {
+        Debug.Log("OnMainTitle");
+        
+        //UIManager - 메인 타이틀 유아이 켜라
+        Debug.Log("MainTitle UI");
+        
+        //UI에서 신호 받으면 targetState 지정
+        targetState = ScreenState.Main_Game;
+        // 로딩씬으로
+        Debug.Log("3초 대기");
+        Invoke(nameof(OnLoadingScene), 3);
+        
+    }
+
+    
+    //"Main_Game"Scene에서 실행 매서드
+    private void OnMainGame()
+    {
+        Debug.Log("OnMainGame");
+        //UIManager야 게임 UI 켜라
+        
+        //게임 종료 신호 받아서 targetState 지정
+        // 로딩씬으로
+        Debug.Log("3초 대기");
+        Invoke(nameof(OnLoadingScene), 3);
     }
 
     #region LoadingScene
@@ -76,25 +107,11 @@ public class SceneController : MonoBehaviour
     {
         Debug.Log("OnLoadingScene");
         
-        //UIManager - 로딩씬 켜라
+        //로딩씬으로 이동
+        SceneManager.LoadScene("Loading");
+        
+        //UIManager - 로딩씬 켜라 -> 알아서 켜도 괜춘할듯
         Debug.Log("Loading UI");
-
-        switch (targetState)
-        {
-            case ScreenState.Main_Title:
-                LoadMainTitle(); //타이틀 화면으로
-                break; 
-            case ScreenState.Main_Game:
-                LoadMainGame(); //게임 화면으로
-                break;
-            default:
-                break;
-        }
-        
-        // ManagerRoot.gameManager.ReadyMain(); //중단된 게임 여부 검사, 다음 씬이 어딘지 결정
-        // ManagerRoot.resourceManager.ReadyMain(); //MainTitle 배경음효과음 
-        // ManagerRoot.scoreManager.ReadyMain(); //최고점수 등록
-        
         
        //비동기식 로딩씬 await asynk -> 참고만
        Debug.Log("로딩 시작");
@@ -133,34 +150,6 @@ public class SceneController : MonoBehaviour
     }
     
     #endregion
-
-
-    //"Main_Title"Scene에서 실행 매서드
-    private void OnMainTitle()
-    {
-        Debug.Log("OnMainTitle");
-        
-        //UIManager - 메인 타이틀 유아이 켜라
-        Debug.Log("MainTitle UI");
-        
-        //UI에서 Main_Game신호 도달 시 씬전환
-        targetState = ScreenState.Main_Game;
-        
-        // 로딩씬으로
-        SceneManager.LoadScene(ScreenState.Loading.ToString());
-        
-    }
-
-    //"Main_Game"Scene에서 실행 매서드
-    private void OnMainGame()
-    {
-        Debug.Log("OnMainGame");
-        //UIManager야 게임 UI 켜라
-    }
-
-
-    
-
     
 
 }
