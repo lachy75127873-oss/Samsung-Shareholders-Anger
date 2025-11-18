@@ -64,9 +64,13 @@ public class SceneController : MonoBehaviour
     {
         Debug.Log("ToDoCDW");
         
+        targetState = ScreenState.Main_Title;
+        
         SceneManager.LoadScene("Loading"); 
     }
-    
+
+    #region LoadingScene
+   
     //"Loading"Scene에서 실행 매서드
     private void OnLoadingScene()
     {
@@ -77,14 +81,11 @@ public class SceneController : MonoBehaviour
 
         switch (targetState)
         {
-            case ScreenState.None: 
-                LoadMainTitle(); //타이틀 화면으로
-                break;
             case ScreenState.Main_Title:
-                LoadTitleToGame(); //게임 화면으로
+                LoadMainTitle(); //타이틀 화면으로
                 break; 
             case ScreenState.Main_Game:
-                LoadGameToTitle(); //타이틀 화면으로
+                LoadMainGame(); //게임 화면으로
                 break;
             default:
                 break;
@@ -96,21 +97,27 @@ public class SceneController : MonoBehaviour
         
         
        //비동기식 로딩씬 await asynk -> 참고만
-        StartCoroutine(LoadSceneRoutine(targetState.ToString()));
+       Debug.Log("로딩 시작");
+       StartCoroutine(LoadSceneRoutine(targetState.ToString()));
+       Debug.Log($"{targetState.ToString()}으로의 로딩완료");
     }
 
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
-        float timer = 1.5f;
-        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
-
-        // 로딩 끝날 때까지 반복
-        while (!op.isDone||timer > 0)
+        float timer = 3f;
+        while (timer > 0f)
         {
-            yield return null;
             timer -= Time.deltaTime;
+            yield return null;
         }
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
         
+        // 로딩 끝날 때까지 반복
+        while (!op.isDone)
+        {
+            timer -= Time.deltaTime;
+            yield return null;
+        }
         Debug.Log("로딩 코루틴 완료");
         
     }
@@ -118,21 +125,14 @@ public class SceneController : MonoBehaviour
     private void LoadMainTitle()
     {
         Debug.Log("LoadToMainTitle");
-        targetState = ScreenState.Main_Title;
     }
 
-    private void LoadTitleToGame()
+    private void LoadMainGame()
     {
-        Debug.Log("TitleToGame");
-        targetState = ScreenState.Main_Game;
-        StartCoroutine(LoadSceneRoutine(targetState.ToString()));
+        Debug.Log("LoadMainGame");
     }
-
-    private void LoadGameToTitle()
-    {
-        Debug.Log("GameToTitle");
-        targetState = ScreenState.Main_Title;
-    }
+    
+    #endregion
 
 
     //"Main_Title"Scene에서 실행 매서드
@@ -146,7 +146,7 @@ public class SceneController : MonoBehaviour
         //UI에서 Main_Game신호 도달 시 씬전환
         targetState = ScreenState.Main_Game;
         
-        // 로딩씬 
+        // 로딩씬으로
         SceneManager.LoadScene(ScreenState.Loading.ToString());
         
     }
