@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5998332133282020620}
   - component: {fileID: 3684846730710169602}
   - component: {fileID: 3636899957129853923}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: AscentObstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
