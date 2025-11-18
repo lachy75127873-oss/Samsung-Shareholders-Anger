@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Processors;
 
 public class PlayerController : MonoBehaviour
@@ -90,23 +91,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            TryJump();
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            TrySlide();
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            TryMove(KeyCode.A);
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            TryMove(KeyCode.D);
-        }
-
         if(isSlide)
             isSlide = animator.GetBool("isSlide");
     }
@@ -176,68 +160,77 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Input
-    private void TryJump()
+    public void OnJump(InputAction.CallbackContext context)
     {
-        if (isDead) return;
-
-        // 공중 상태가 아니라면 점프 가능
-        if (!isGrounded) return;
-
-        // 점프 로직 활성화
-        isJump = true;
-
-        // 애니메이션 활성화
-        animator.SetBool("isJump", true);
-
-        // 슬라이딩 중이었을 경우
-        isSlide = false;
-        if (animator.GetBool("isSlide"))
-            animator.SetBool("isSlide", false);
-    }
-    private void TrySlide()
-    {
-        if (isDead) return;
-
-        // 슬라이딩 중이 아니라면 점프 가능
-        if (isSlide) return;
-
-        // 슬라이딩 로직 활성화
-        isSlide = true;
-
-        // 애니메이션 활성화
-        animator.SetBool("isSlide", true);
-
-        // 점프 중이었을 경우
-        isAirborne = false;
-        airborneTimer = default;
-        if (animator.GetBool("isJump"))
-            animator.SetBool("isJump", false);
-    }
-    private void TryMove(KeyCode key)
-    {
-        if (isDead) return;
-
-        if (key == KeyCode.A)
+        if (context.phase == InputActionPhase.Started)
         {
-            if (currentRail == -1)
-                return;
+            if (isDead) return;
+            if (!isGrounded) return;
+
+            // 점프 로직 활성화
+            isJump = true;
+
+            // 애니메이션 활성화
+            animator.SetBool("isJump", true);
+
+            // 슬라이딩 중이었을 경우
+            isSlide = false;
+            if (animator.GetBool("isSlide"))
+                animator.SetBool("isSlide", false);
+        }
+    }
+    public void OnSlide(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            if (isDead) return;
+            if (isSlide) return;
+
+            // 슬라이딩 로직 활성화
+            isSlide = true;
+
+            // 애니메이션 활성화
+            animator.SetBool("isSlide", true);
+
+            // 점프 중이었을 경우
+            isAirborne = false;
+            airborneTimer = default;
+            if (animator.GetBool("isJump"))
+                animator.SetBool("isJump", false);
+        }
+    }
+    public void OnMoveLeft(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            if (isDead) return;
+            if (currentRail == -1) return;
 
             currentRail--;
             targetMovePos += Vector3.left * sideMoveDistance;
-        }
-        else
-        {
-            if (currentRail == 1)
-                return;
 
+            if (isSlide)
+            {
+                isSlide = false;
+                animator.SetBool("isSlide", false);
+            }
+        }
+    }
+    public void OnMoveRight(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            if (isDead) return;
+            if (currentRail == 1) return;
+            
             currentRail++;
             targetMovePos += Vector3.right * sideMoveDistance;
-        }
 
-        if (isSlide)
-        {
-            isSlide = false;
-            animator.SetBool("isSlide", false);
+            if (isSlide)
+            {
+                isSlide = false;
+                animator.SetBool("isSlide", false);
+            }
         }
     }
     #endregion
