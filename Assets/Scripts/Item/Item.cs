@@ -12,7 +12,7 @@ public class Item : MonoBehaviour
     #region 유니티 CallBack
     private void Awake()
     {
-        meshRenderer = GetComponentInChildren<MeshRenderer>();
+        meshRenderer = GetComponent<MeshRenderer>();
         itemCollider = GetComponent<Collider>();
     }
 
