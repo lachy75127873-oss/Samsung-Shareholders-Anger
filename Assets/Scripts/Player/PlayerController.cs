@@ -323,6 +323,7 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(rays[i], injuryRayLength, injuryLayerMask))
             {
                 isInjured = true;
+                animator.SetBool("isInjury", true);
                 return true;
             }
         }
