@@ -17,7 +17,9 @@ public enum ScreenState
 public class SceneController : MonoBehaviour
 {
     private ScreenState targetState; //다음 상태 지정용 enum
-    private Coroutine coroutine; //
+    
+    private Coroutine coroutine; // 로딩씬용 코루틴
+    [SerializeField] private float loadingTime = 1.5f;
     
     //씬컨트롤러 초기화 로직
     public void Init() 
@@ -44,7 +46,7 @@ public class SceneController : MonoBehaviour
         switch (scene.name)
         {
             case "TempCDW": //예비 인트로 씬이라 가정
-                ToDoCDW();
+                OnIntroScene();
                 break;
             case "Main_Title":
                 OnMainTitle();
@@ -58,10 +60,12 @@ public class SceneController : MonoBehaviour
     }
     
     //"TempCDW"씬에서 실행 매서드
-    private void ToDoCDW()
+    private void OnIntroScene()
     {
         Debug.Log("인트로 화면 동작 중");
-        //UI든 어디든 인트로 쪽에서 로딩씬 호출
+        /*
+         * UI - 인트로 
+         */
         
         targetState = ScreenState.Main_Title;
         
@@ -70,25 +74,29 @@ public class SceneController : MonoBehaviour
     }
 
 
+    #region "Main_Title"Scene 실행 매서드
 
-    //"Main_Title"Scene에서 실행 매서드
     private void OnMainTitle()
     {
         Debug.Log("OnMainTitle");
         
-        //UIManager - 메인 타이틀 유아이 켜라
+        /*
+         * UIManager - 메인 타이틀 UI키기
+         * UIManager - start버튼 누를 시, 
+         */
         Debug.Log("MainTitle UI");
-        
-        //UI에서 신호 받으면 targetState 지정
         targetState = ScreenState.Main_Game;
+        
         // 로딩씬으로
         Debug.Log("3초 대기");
         Invoke(nameof(OnLoadingScene), 3);
         
     }
 
-    
-    //"Main_Game"Scene에서 실행 매서드
+    #endregion
+
+    #region "Main_Game"Scene 실행 매서드
+
     private void OnMainGame()
     {
         Debug.Log("OnMainGame");
@@ -99,6 +107,8 @@ public class SceneController : MonoBehaviour
         Debug.Log("3초 대기");
         Invoke(nameof(OnLoadingScene), 3);
     }
+
+    #endregion
 
     #region LoadingScene
    
@@ -121,7 +131,7 @@ public class SceneController : MonoBehaviour
 
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
-        float timer = 3f;
+        float timer = loadingTime;
         while (timer > 0f)
         {
             timer -= Time.deltaTime;

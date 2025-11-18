@@ -8,7 +8,6 @@ public class GameManager
     public void Init() 
     {
         Debug.Log("GameManager initialized");
-         
     }
     
     //Main_Title 이전 로딩씬 

@@ -8,8 +8,8 @@ public class ManagerRoot : Singleton<ManagerRoot>
    public static ScoreManager scoreManager;
    public static ResourceManager resourceManager;
    
-   [SerializeField]private SceneController sceneController; 
-
+   [SerializeField]private SceneController sceneController;
+   
     protected override void Init() // 매니저들의 초기화 호출 순서 조절
     {
         gameManager = new GameManager();
