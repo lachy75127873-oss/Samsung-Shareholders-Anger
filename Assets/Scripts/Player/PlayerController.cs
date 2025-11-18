@@ -35,6 +35,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Tooltip("보통의 콜라이더 크기")] Vector2 defaultCollider;
     [SerializeField][Tooltip("슬라이딩 콜라이더 크기")] Vector2 slideCollider;
 
+    [Header("Injure")]
+    [SerializeField] Transform injuryRayPoint;
+    [SerializeField][Tooltip("부상 여부")] bool isInjured = false;
+    [SerializeField][Tooltip("부상 타이머")] float injuryTimer = 0f;
+    [SerializeField][Range(0, 5)][Tooltip("부상 지속 시간")] float injuryDuration;
+    [SerializeField][Range(0, 5)][Tooltip("부상 판정 레이 길이")] float injuryRayLength;
+    [SerializeField][Tooltip("부상 판정 레이어 마스크")] LayerMask injuryLayerMask;
+    [SerializeField] bool? lastSideInput = null; // left = false, right = true
+
     [Header("Debug")]
     [SerializeField] bool isDead = false; // 플레이어 사망시 해당 변수 전환
     [SerializeField] bool isGrounded = false;
@@ -82,6 +91,7 @@ public class PlayerController : MonoBehaviour
         animator = GameObject.Find("Root").GetComponent<Animator>();
         rb = GameObject.Find("Player").GetComponent<Rigidbody>();
         capsuleCollider = GameObject.Find("Player").GetComponent<CapsuleCollider>();
+        injuryRayPoint = GameObject.Find("RayPoint").transform;
 
         #region /*초기 값 세팅*/
 
@@ -115,6 +125,15 @@ public class PlayerController : MonoBehaviour
     {
         if (isSlide)
             isSlide = animator.GetBool("isSlide");
+        if (isInjured)
+        {
+            injuryTimer += Time.deltaTime;
+            if(injuryTimer >= injuryDuration)
+            {
+                isInjured = false;
+                injuryTimer = default;
+            }
+        }
 #if UNITY_EDITOR
 #endif
     }
@@ -124,6 +143,10 @@ public class PlayerController : MonoBehaviour
         /*사망시 로직*/
         if (isDead)
             Dead();
+
+        if (!isInjured)
+            if (CheckInjured())
+                ResotreLastRail();
 
         /*캐릭터 상태에 따라 콜라이더 조절*/
         ChangeColliderSize();
@@ -226,6 +249,8 @@ public class PlayerController : MonoBehaviour
                 isSlide = false;
                 animator.SetBool("isSlide", false);
             }
+
+            lastSideInput = false;
         }
     }
     public void OnMoveRight(InputAction.CallbackContext context)
@@ -243,6 +268,8 @@ public class PlayerController : MonoBehaviour
                 isSlide = false;
                 animator.SetBool("isSlide", false);
             }
+
+            lastSideInput = true;
         }
     }
     #endregion
@@ -277,6 +304,48 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = Vector3.zero;
         rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
+    }
+    #endregion
+
+    #region Injury
+    bool CheckInjured()
+    {
+        Ray[] rays = new Ray[2]
+        {
+            new(injuryRayPoint.position, Vector3.right),
+            new(injuryRayPoint.position, Vector3.left)
+        };
+
+        for (int i = 0; i < rays.Length; i++)
+        {
+
+            Debug.DrawRay(rays[i].origin, rays[i].direction * injuryRayLength, Color.green);
+            if (Physics.Raycast(rays[i], injuryRayLength, injuryLayerMask))
+            {
+                isInjured = true;
+                return true;
+            }
+        }
+
+        return false;
+    }
+    void ResotreLastRail()
+    {
+        if(lastSideInput == true)
+        {
+            currentRail--;
+            targetMovePos += Vector3.left * sideMoveDistance;
+        }
+        else if(lastSideInput == false)
+        {
+            currentRail++;
+            targetMovePos += Vector3.right * sideMoveDistance;
+        }
+        else
+        {
+            currentRail = default;
+            targetMovePos.x = default;
+        }
     }
     #endregion
 
