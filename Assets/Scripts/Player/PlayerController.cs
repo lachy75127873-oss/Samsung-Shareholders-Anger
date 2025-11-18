@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem.Processors;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -35,8 +35,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Tooltip("보통의 콜라이더 크기")] Vector2 defaultCollider;
     [SerializeField][Tooltip("슬라이딩 콜라이더 크기")] Vector2 slideCollider;
 
+    [Header("Injure")]
+    [SerializeField] Transform injuryRayPoint;
+    [SerializeField][Tooltip("부상 여부")] bool isInjured = false;
+    [SerializeField][Tooltip("부상 타이머")] float injuryTimer = 0f;
+    [SerializeField][Range(0, 5)][Tooltip("부상 지속 시간")] float injuryDuration;
+    [SerializeField][Range(0, 5)][Tooltip("부상 판정 레이 길이")] float injuryRayLength;
+    [SerializeField][Tooltip("부상 판정 레이어 마스크")] LayerMask injuryLayerMask;
+    [SerializeField] bool? lastSideInput = null; // left = false, right = true
+
+    [Header("Item")]
+    [SerializeField] PlayerItemRootRange itemRootRange;
+
     [Header("Debug")]
     [SerializeField] bool isDead = false; // 플레이어 사망시 해당 변수 전환
+    [SerializeField] bool isGrounded = false;
     [SerializeField] bool isJump = false;
     [SerializeField] bool isAirborne = false;
     [SerializeField] bool isSlide = false;
@@ -49,8 +62,31 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Tooltip("현재 Velocity Debug용")] Vector3 currentVelocity;
 #endif
 
+    public bool IsGrounded
+    {
+        get => isGrounded;
+        set
+        {
+            if (isGrounded == value) return;
+
+            if (!isGrounded)
+            {
+                if (isAirborne)
+                {
+                    isAirborne = false;
+
+                }
+                animator.SetBool("isJump", false);
+            }
+
+            isGrounded = value;
+        }
+    }
+
     /*플레이어 사망시 호출*/
     public event Action OnPlayerDead;
+
+    #region LifeCycle
 
 #if UNITY_EDITOR
 
@@ -59,6 +95,8 @@ public class PlayerController : MonoBehaviour
         animator = GameObject.Find("Root").GetComponent<Animator>();
         rb = GameObject.Find("Player").GetComponent<Rigidbody>();
         capsuleCollider = GameObject.Find("Player").GetComponent<CapsuleCollider>();
+        injuryRayPoint = GameObject.Find("RayPoint").transform;
+        itemRootRange = GetComponentInChildren<PlayerItemRootRange>();
 
         #region /*초기 값 세팅*/
 
@@ -88,74 +126,27 @@ public class PlayerController : MonoBehaviour
         targetMovePos = rb.position;
     }
 
-    #region Movement
-
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        /*슬라이드 애니메이션이 끝나야 슬라이드가 끝*/
+        if (isSlide)
+            isSlide = animator.GetBool("isSlide");
+
+        if (isInjured)
         {
-            if (!isJump && !isAirborne)
+            injuryTimer += Time.deltaTime;
+            if(injuryTimer >= injuryDuration)
             {
-                isSlide = false;
-                isJump = true;
-                //ChangeColliderSize();
-                //animator.SetBool("isJump", true);
+                isInjured = false;
+                injuryTimer = default;
+                animator.SetFloat("isInjury", 0f);
             }
         }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            if (!isSlide)
-            {
-                isJump = false;
-                rb.useGravity = true;
-                isSlide = true;
-                //ChangeColliderSize();
-            }
 
-            //animator.SetBool("isJump", false);
-            animator.SetBool("isSlide", true);
-        }
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
-        {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                if (currentRail == -1)
-                    return;
-
-                currentRail--;
-                targetMovePos += Vector3.left * sideMoveDistance;
-            }
-            else
-            {
-                if (currentRail == 1)
-                    return;
-
-                currentRail++;
-                targetMovePos += Vector3.right * sideMoveDistance;
-            }
-            isSlide = false;
-            animator.SetBool("isSlide", false);
-        }
-
-        ///*CheckJumpEnd*/
-        //if (CheckGround())
-        //{
-        //    animator.SetBool("isJump", false);
-        //}
-
-        /*CheckSlideEnd*/
-        if (!animator.GetBool("isSlide"))
-        {
-            isSlide = false;
-            //ChangeColliderSize();
-        }
-
-#if UNITY_EDITOR // 디버그 전용 인풋
-
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Debug.Log("상태 초기화, 디버그용");
-
+            StopRun = false;
             isDead = false;
             isJump = false;
             isAirborne = false;
@@ -170,81 +161,162 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isSlide", false);
             animator.SetBool("isDead", false);
         }
-        if (Input.GetKeyDown(KeyCode.X))
+        else if (Input.GetKeyDown(KeyCode.X))
         {
             Debug.Log("게임 오버");
             isDead = true;
             OnPlayerDead?.Invoke();
             animator.SetBool("isDead", true);
         }
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Debug.Log("땅에 닿았다.");
-            animator.SetBool("isJump", false);
-        }
 #endif
     }
 
     private void FixedUpdate()
     {
+        /*사망시 로직*/
         if (isDead)
-        {
-            rb.velocity = Vector3.zero;
-            rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
-            return;
-        }
+            Dead();
 
-        /*Jump*/
+        if (!isInjured)
+            if (CheckInjured())
+                ResotreLastRail();
+
+        /*캐릭터 상태에 따라 콜라이더 조절*/
+        ChangeColliderSize();
+        /*지상 or 공중 체크, 프로퍼티 확인*/
+        IsGrounded = CheckGrouded();
+
+        /*점프*/
         if (isJump)
         {
-            beforeJumpPos = rb.position;
-            rb.AddForce(jumpPower * Vector3.up, ForceMode.Impulse);
-        }
-
-        /*Checked MaxHeight*/
-        if (rb.position.y > beforeJumpPos.y + MaxHeight)
-        {
-            rb.velocity = new(rb.velocity.x, default, rb.velocity.z);
-            rb.position = new(rb.position.x, beforeJumpPos.y + MaxHeight, rb.position.z);
-            /*Airborne*/
-            isAirborne = true;
-            rb.useGravity = false;
-
-            //Debug.Log("Checked MaxHeight");
-        }
-
-        /*Airborne*/
-        if (isAirborne)
-        {
-            airborneTimer += Time.fixedDeltaTime;
-            //Debug.Log("airborneTimer");
-
-            if (airborneTimer >= airborneTime)
-            {
-                isAirborne = false;
-                rb.useGravity = true;
-                airborneTimer = default;
-                rb.velocity = new(rb.velocity.x, velocityY, rb.velocity.z);
-
-                Debug.Log("Airborne End");
-            }
-        }
-
-        if (isSlide)
-        {
+            Jump();
             isJump = false;
-            isAirborne = false;
-            //rb.velocity += slidDownSpeed * Time.fixedDeltaTime * Vector3.down;
-            rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
         }
 
-        if (rb.velocity.y < 0 && !isSlide)
+        /*점프 후 공중에 뜬 상태*/
+        if (!IsGrounded)
+        {
+            if (!isAirborne)
+            {
+                if (IsMaxHeight())
+                    ChangeStateAirBorne();
+            }
+            else
+                /*공중 시간 체크*/
+                CheckAirborneTimer();
+        }
+
+        /*자연 낙하 or 슬라이드 낙하*/
+        if (isSlide) Slide();
+        else if (IsFalling())
         {
             rb.velocity += fallAccel * Time.fixedDeltaTime * Vector3.down;
-            //Debug.Log("Falling");
         }
 
-        /*SideMove*/
+        /*좌우 이동*/
+        if (IsSideMoving())
+            MoveSide();
+
+        /*앞으로 전진*/
+        if (!StopRun)
+            rb.MovePosition(rb.position + runSpeed * Time.fixedDeltaTime * Vector3.forward);
+
+#if UNITY_EDITOR
+        currentVelocity = rb.velocity;
+        currentPos = rb.position;
+#endif
+    }
+    #endregion
+
+    #region Input
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            if (isDead) return;
+            if (!IsGrounded) return;
+
+            // 점프 로직 활성화
+            isJump = true;
+
+            // 애니메이션 활성화
+            animator.SetBool("isJump", true);
+
+            // 슬라이딩 중이었을 경우
+            isSlide = false;
+            if (animator.GetBool("isSlide"))
+                animator.SetBool("isSlide", false);
+        }
+    }
+    public void OnSlide(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            if (isDead) return;
+            if (isSlide) return;
+
+            // 슬라이딩 로직 활성화
+            isSlide = true;
+
+            // 애니메이션 활성화
+            animator.SetBool("isSlide", true);
+
+            // 점프 중이었을 경우
+            isAirborne = false;
+            airborneTimer = default;
+            if (animator.GetBool("isJump"))
+                animator.SetBool("isJump", false);
+        }
+    }
+    public void OnMoveLeft(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            if (isDead) return;
+            if (currentRail == -1) return;
+
+            currentRail--;
+            targetMovePos += Vector3.left * sideMoveDistance;
+
+            if (isSlide)
+            {
+                isSlide = false;
+                animator.SetBool("isSlide", false);
+            }
+
+            lastSideInput = false;
+        }
+    }
+    public void OnMoveRight(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            if (isDead) return;
+            if (currentRail == 1) return;
+
+            currentRail++;
+            targetMovePos += Vector3.right * sideMoveDistance;
+
+            if (isSlide)
+            {
+                isSlide = false;
+                animator.SetBool("isSlide", false);
+            }
+
+            lastSideInput = true;
+        }
+    }
+    #endregion
+
+    #region MoveLogic
+    private void Jump()
+    {
+        // 점프 로직
+        beforeJumpPos = rb.position;
+        rb.AddForce(jumpPower * Vector3.up, ForceMode.Impulse);
+    }
+    private void MoveSide()
+    {
         if (rb.position.x != targetMovePos.x)
         {
             float nextX = Mathf.MoveTowards(
@@ -257,70 +329,63 @@ public class PlayerController : MonoBehaviour
             next.x = nextX;
             rb.MovePosition(next);
         }
-
-#if UNITY_EDITOR 
-        /*ForwardMove*/
-        if (!StopRun)
-        {
-#endif
-            //rb.velocity = new(rb.velocity.x, rb.velocity.y, runSpeed);
-            rb.MovePosition(rb.position + runSpeed * Time.fixedDeltaTime * Vector3.forward);
-
-#if UNITY_EDITOR
-
-        }
-#endif
-
-        /*CheckJumpEnd*/
-        if (CheckGround())
-        {
-            isJump = false;
-            animator.SetBool("isJump", false);
-        }
-        else
-        {
-            animator.SetBool("isJump", true);
-        }
-
-        ChangeColliderSize();
-
-#if UNITY_EDITOR // 디버그 전용 속성
-            currentVelocity = rb.velocity;
-        currentPos = rb.position;
-#endif
     }
-
-    /// <summary>
-    /// Raycast를 통해 플레이어 착지 판단
-    /// </summary>
-    bool CheckGround()
+    private void Slide()
     {
-        Ray[] rays = new Ray[4]
+        rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
+    }
+    private void Dead()
+    {
+        rb.velocity = Vector3.zero;
+        rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
+    }
+    #endregion
+
+    #region Injury
+    bool CheckInjured()
+    {
+        Ray[] rays = new Ray[2]
         {
-            new(rb.position + (Vector3.forward * rayRadius) + (Vector3.up * startRayY), Vector3.down),
-            new(rb.position + (Vector3.back * rayRadius) + (Vector3.up * startRayY), Vector3.down),
-            new(rb.position + (Vector3.right * rayRadius) + (Vector3.up * startRayY), Vector3.down),
-            new(rb.position + (Vector3.left * rayRadius) + (Vector3.up * startRayY), Vector3.down)
+            new(injuryRayPoint.position, Vector3.right),
+            new(injuryRayPoint.position, Vector3.left)
         };
 
         for (int i = 0; i < rays.Length; i++)
         {
-#if UNITY_EDITOR
 
-            Debug.DrawRay(rays[i].origin, rays[i].direction * landDistance, Color.green);
-#endif
-            if (Physics.Raycast(rays[i], landDistance, groundLayerMask))
+            Debug.DrawRay(rays[i].origin, rays[i].direction * injuryRayLength, Color.green);
+            if (Physics.Raycast(rays[i], injuryRayLength, injuryLayerMask))
             {
+                isInjured = true;
+                animator.SetBool("isSpin", true);
+                animator.SetFloat("isInjury", 1f);
                 return true;
             }
         }
 
         return false;
     }
+    void ResotreLastRail()
+    {
+        if(lastSideInput == true)
+        {
+            currentRail--;
+            targetMovePos += Vector3.left * sideMoveDistance;
+        }
+        else if(lastSideInput == false)
+        {
+            currentRail++;
+            targetMovePos += Vector3.right * sideMoveDistance;
+        }
+        else
+        {
+            currentRail = default;
+            targetMovePos.x = default;
+        }
+    }
+    #endregion
 
-    /// <summary>
-    /// 슬라이딩 여부에 따라 콜라이더 사이즈를 변경
-    /// </summary>
+    #region CheckCondition
     void ChangeColliderSize()
     {
         if (isSlide)
@@ -342,18 +407,70 @@ public class PlayerController : MonoBehaviour
             capsuleCollider.height = defaultCollider.y;
         }
     }
+    void CheckAirborneTimer()
+    {
+        airborneTimer += Time.fixedDeltaTime;
 
+        if (airborneTimer >= airborneTime)
+        {
+            isAirborne = false;
+            rb.useGravity = true;
+            airborneTimer = default;
+            rb.velocity = new(rb.velocity.x, velocityY, rb.velocity.z);
+        }
+    }
+    void ChangeStateAirBorne()
+    {
+        rb.velocity = new(rb.velocity.x, default, rb.velocity.z);
+        rb.position = new(rb.position.x, beforeJumpPos.y + MaxHeight, rb.position.z);
+
+        isAirborne = true;
+        rb.useGravity = false;
+    }
+    bool IsMaxHeight()
+    {
+        return rb.position.y > beforeJumpPos.y + MaxHeight;
+    }
+    bool IsFalling()
+    {
+        return rb.velocity.y < 0 && !isSlide;
+    }
+    bool IsSideMoving()
+    {
+        return rb.position.x != targetMovePos.x;
+    }
+    bool CheckGrouded()
+    {
+        Ray[] rays = new Ray[4]
+        {
+            new(rb.position + (Vector3.forward * rayRadius) + (Vector3.up * startRayY), Vector3.down),
+            new(rb.position + (Vector3.back * rayRadius) + (Vector3.up * startRayY), Vector3.down),
+            new(rb.position + (Vector3.right * rayRadius) + (Vector3.up * startRayY), Vector3.down),
+            new(rb.position + (Vector3.left * rayRadius) + (Vector3.up * startRayY), Vector3.down)
+        };
+
+        for (int i = 0; i < rays.Length; i++)
+        {
+
+            Debug.DrawRay(rays[i].origin, rays[i].direction * landDistance, Color.green);
+            if (Physics.Raycast(rays[i], landDistance, groundLayerMask))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
     #endregion
 
     #region Trigger/Collision
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("트리거");
-
         if (other.gameObject.layer == 7)
         {
             isDead = true;
+            StopRun = true;
             animator.SetBool("isDead", true);
             OnPlayerDead?.Invoke();
         }
@@ -361,6 +478,19 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+    }
+
+    #endregion
+
+    #region Item
+    public void EnableMagnetRange()
+    {
+        itemRootRange.ApplyMagnetRange();
+    }
+
+    public void DisableMagnetRange()
+    {
+        itemRootRange.ApplyDefaultRange();
     }
 
     #endregion

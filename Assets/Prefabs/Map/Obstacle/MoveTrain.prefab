@@ -263,6 +263,7 @@ GameObject:
   - component: {fileID: 316899086428000544}
   - component: {fileID: 2152930488311188930}
   - component: {fileID: 2342714961918105614}
+  - component: {fileID: 6868766670679661620}
   m_Layer: 7
   m_Name: MoveTrain
   m_TagString: Untagged
@@ -345,6 +346,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.16157556, z: 6.8070226}
   m_Center: {x: 0, y: 1.4408666, z: 2.6498306}
+--- !u!65 &6868766670679661620
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3711632135410688808}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.28983784, z: 6.832667}
+  m_Center: {x: 0, y: 1.2142897, z: 2.6391027}
 --- !u!1 &3770035699678819263
 GameObject:
   m_ObjectHideFlags: 0
