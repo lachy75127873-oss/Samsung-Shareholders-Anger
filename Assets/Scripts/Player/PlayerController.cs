@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Processors;
 
 public class PlayerController : MonoBehaviour
 {
@@ -50,8 +49,31 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Tooltip("현재 Pos Debug용")] Vector3 currentPos;
     [SerializeField][Tooltip("현재 Velocity Debug용")] Vector3 currentVelocity;
 #endif
+
+    public bool IsGrounded
+    {
+        get => isGrounded;
+        set
+        {
+            if (isGrounded == value) return;
+
+            if (!isGrounded)
+            {
+                if (isAirborne)
+                {
+                    isAirborne = false;
+
+                }
+                animator.SetBool("isJump", false);
+            }
+
+            isGrounded = value;
+        }
+    }
+
     /*플레이어 사망시 호출*/
     public event Action OnPlayerDead;
+
 
 #if UNITY_EDITOR
 
@@ -91,43 +113,32 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if(isSlide)
+        if (isSlide)
             isSlide = animator.GetBool("isSlide");
+#if UNITY_EDITOR
+#endif
     }
 
     private void FixedUpdate()
     {
+        /*사망시 로직*/
         if (isDead)
             Dead();
 
+        /*캐릭터 상태에 따라 콜라이더 조절*/
         ChangeColliderSize();
+        /*지상 or 공중 체크, 프로퍼티 확인*/
+        IsGrounded = CheckGrouded();
 
-        var _ = IsGrounded();
-        if (isGrounded != _)
-        {
-            Debug.Log($"IsGrounded = {_}");
-            if (!isGrounded)
-            {
-                if (isAirborne)
-                {
-                    isAirborne = false;
-                    
-                }
-                animator.SetBool("isJump", false);
-            }
-
-            isGrounded = _;
-        }
-
+        /*점프*/
         if (isJump)
         {
             Jump();
             isJump = false;
         }
 
-        // 잘못하면 무한 에어본 되는거 아닌가
-
-        if (!isGrounded)
+        /*점프 후 공중에 뜬 상태*/
+        if (!IsGrounded)
         {
             if (!isAirborne)
             {
@@ -135,23 +146,24 @@ public class PlayerController : MonoBehaviour
                     ChangeStateAirBorne();
             }
             else
+                /*공중 시간 체크*/
                 CheckAirborneTimer();
         }
 
-        // 하강은 점프 => 슬라이드거나 일반 하강
+        /*자연 낙하 or 슬라이드 낙하*/
         if (isSlide) Slide();
         else if (IsFalling())
         {
             rb.velocity += fallAccel * Time.fixedDeltaTime * Vector3.down;
         }
 
+        /*좌우 이동*/
         if (IsSideMoving())
             MoveSide();
 
+        /*앞으로 전진*/
         if (!StopRun)
-        {
             rb.MovePosition(rb.position + runSpeed * Time.fixedDeltaTime * Vector3.forward);
-        }
 
 #if UNITY_EDITOR
         currentVelocity = rb.velocity;
@@ -165,7 +177,7 @@ public class PlayerController : MonoBehaviour
         if (context.phase == InputActionPhase.Started)
         {
             if (isDead) return;
-            if (!isGrounded) return;
+            if (!IsGrounded) return;
 
             // 점프 로직 활성화
             isJump = true;
@@ -222,7 +234,7 @@ public class PlayerController : MonoBehaviour
         {
             if (isDead) return;
             if (currentRail == 1) return;
-            
+
             currentRail++;
             targetMovePos += Vector3.right * sideMoveDistance;
 
@@ -322,7 +334,7 @@ public class PlayerController : MonoBehaviour
     {
         return rb.position.x != targetMovePos.x;
     }
-    bool IsGrounded()
+    bool CheckGrouded()
     {
         Ray[] rays = new Ray[4]
         {
