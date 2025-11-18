@@ -44,6 +44,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Tooltip("부상 판정 레이어 마스크")] LayerMask injuryLayerMask;
     [SerializeField] bool? lastSideInput = null; // left = false, right = true
 
+    [Header("Item")]
+    [SerializeField] PlayerItemRootRange itemRootRange;
+
     [Header("Debug")]
     [SerializeField] bool isDead = false; // 플레이어 사망시 해당 변수 전환
     [SerializeField] bool isGrounded = false;
@@ -83,6 +86,7 @@ public class PlayerController : MonoBehaviour
     /*플레이어 사망시 호출*/
     public event Action OnPlayerDead;
 
+    #region LifeCycle
 
 #if UNITY_EDITOR
 
@@ -92,6 +96,7 @@ public class PlayerController : MonoBehaviour
         rb = GameObject.Find("Player").GetComponent<Rigidbody>();
         capsuleCollider = GameObject.Find("Player").GetComponent<CapsuleCollider>();
         injuryRayPoint = GameObject.Find("RayPoint").transform;
+        itemRootRange = GetComponentInChildren<PlayerItemRootRange>();
 
         #region /*초기 값 세팅*/
 
@@ -221,6 +226,7 @@ public class PlayerController : MonoBehaviour
         currentPos = rb.position;
 #endif
     }
+    #endregion
 
     #region Input
     public void OnJump(InputAction.CallbackContext context)
@@ -472,6 +478,19 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+    }
+
+    #endregion
+
+    #region Item
+    public void EnableMagnetRange()
+    {
+        itemRootRange.ApplyMagnetRange();
+    }
+
+    public void DisableMagnetRange()
+    {
+        itemRootRange.ApplyDefaultRange();
     }
 
     #endregion
