@@ -2026,7 +2026,7 @@ MonoBehaviour:
   injuryRayPoint: {fileID: 50169129523700223}
   isInjured: 0
   injuryTimer: 0
-  injuryDuration: 2
+  injuryDuration: 5
   injuryRayLength: 0.5
   injuryLayerMask:
     serializedVersion: 2

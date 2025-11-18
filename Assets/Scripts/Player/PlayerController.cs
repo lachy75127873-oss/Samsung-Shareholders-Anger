@@ -141,6 +141,7 @@ public class PlayerController : MonoBehaviour
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.R))
         {
+            StopRun = false;
             isDead = false;
             isJump = false;
             isAirborne = false;
