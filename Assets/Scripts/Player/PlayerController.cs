@@ -123,8 +123,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        /*슬라이드 애니메이션이 끝나야 슬라이드가 끝*/
         if (isSlide)
             isSlide = animator.GetBool("isSlide");
+
         if (isInjured)
         {
             injuryTimer += Time.deltaTime;
@@ -132,9 +134,34 @@ public class PlayerController : MonoBehaviour
             {
                 isInjured = false;
                 injuryTimer = default;
+                animator.SetFloat("isInjury", 0f);
             }
         }
+
 #if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            isDead = false;
+            isJump = false;
+            isAirborne = false;
+            isSlide = false;
+            airborneTimer = default;
+            currentRail = default;
+            transform.position = default;
+            rb.position = default;
+            rb.useGravity = true;
+
+            animator.SetBool("isJump", false);
+            animator.SetBool("isSlide", false);
+            animator.SetBool("isDead", false);
+        }
+        else if (Input.GetKeyDown(KeyCode.X))
+        {
+            Debug.Log("게임 오버");
+            isDead = true;
+            OnPlayerDead?.Invoke();
+            animator.SetBool("isDead", true);
+        }
 #endif
     }
 
@@ -323,7 +350,8 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(rays[i], injuryRayLength, injuryLayerMask))
             {
                 isInjured = true;
-                animator.SetBool("isInjury", true);
+                animator.SetBool("isSpin", true);
+                animator.SetFloat("isInjury", 1f);
                 return true;
             }
         }
