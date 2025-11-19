@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ScoreCheck
   - ItemCheck
+  - Coin
   layers:
   - Default
   - TransparentFX
