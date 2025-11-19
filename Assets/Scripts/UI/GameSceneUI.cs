@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,6 +34,11 @@ public class GameSceneUI : MonoBehaviour
     [Tooltip("전일대비 퍼센트 표시하는 텍스트")]
     [SerializeField] Text currentPercent;
     [Header("알림 창")]
+    /// <summary>
+    /// 알람을 보여주는 퍼센트 수치
+    /// </summary>
+    [Tooltip("알람을 보여주는 퍼센트 수치")]
+    [SerializeField] float showAlarm = 1.5f;
     /// <summary>
     /// 주가 상승시 알람이 뜨는 창
     /// </summary>
@@ -88,6 +91,10 @@ public class GameSceneUI : MonoBehaviour
     [Tooltip("아이템 아이콘 1")]
     [SerializeField] Sprite itemIcon1;
     /// <summary>
+    /// 퍼센트 수치를 재기 시작하는 최소값
+    /// </summary>
+    const byte startPercent = 1;
+    /// <summary>
     /// 시작시 기본세팅
     /// </summary>
     private void Start()
@@ -100,27 +107,21 @@ public class GameSceneUI : MonoBehaviour
     /// score에 넣은 값이 현재 주가로 표시됨.
     /// </summary>
     /// <param name="score"></param>
-    internal void InputScore(float score)//점수를 업데이트로 계속 띄우는거 비효율적이니까 점수 습득할때 이 함수를 가져다 쓰는거 어떨까요?
+    internal void InputScore(float score)//점수가 어디있는지 물어서 세팅해야 됨.
     {
         currentScore.text = score.ToString("N2");
-        if (previousScore > 0)
+        if (score == startPercent)
+        {previousScore = score;}
+        float percent = ((score - previousScore) / previousScore) * 100;
+        if (percent % showAlarm == 0)
         {
-            float percent = ((score - previousScore) / previousScore) * 100;
             alarmShow.SetActive(true);
             alarmAnimator.SetBool("isActive", true);
             newsTitle.text = $"지금 삼성전자 가격이 {percent:N2}% 상승했어요";
             newsDescribe.text = $"금일 장 중 최고가를 기록했어요. ({score:N2}원)";
+            CancelInvoke("AlarmOff");
+            Invoke("AlarmOff", 10);
         }
-        else
-        {
-            alarmShow.SetActive(true);
-            alarmAnimator.SetBool("isActive", true);
-            newsTitle.text = $"정규장 개시! 시초가 ({score:N2}원) 형성";
-            newsDescribe.text = $"금일 장 중 최고가를 기록했어요. ({score:N2}원)";
-        }
-            previousScore = score;
-        CancelInvoke("AlarmOff");
-        Invoke("AlarmOff",10);
     }
     /// <summary>
     /// 알람을 사라지게 하는 함수.
