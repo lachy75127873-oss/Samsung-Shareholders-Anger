@@ -82,7 +82,11 @@ public class SceneController : MonoBehaviour
         
         /*
          * UIManager - 메인 타이틀 UI키기
-         * UIManager - start버튼 누를 시, 
+         * UIManager - start버튼 누를 시,
+         *
+         *ScoreManager - 최고점수 보여주기
+         *
+         * GameManager - setPlayer
          */
         Debug.Log("MainTitle UI");
         targetState = ScreenState.Main_Game;
@@ -102,7 +106,14 @@ public class SceneController : MonoBehaviour
         Debug.Log("OnMainGame");
         //UIManager야 게임 UI 켜라
         
-        //게임 종료 신호 받아서 targetState 지정
+        //ScoreManager - 점수 초기화
+        
+        //GameManager - 스테이지 초기화(플레이어 정보 & 맵 배치 등)(속도, 생사, 위치 등)
+        
+        //GameManager = 게임오버 판정
+        
+        //ScoreManager - 최고점수 갱신
+        
         // 로딩씬으로
         Debug.Log("3초 대기");
         Invoke(nameof(OnLoadingScene), 3);
@@ -113,6 +124,12 @@ public class SceneController : MonoBehaviour
     #region LoadingScene
    
     //"Loading"Scene에서 실행 매서드
+
+    public void LoadTargetScreen(ScreenState state)
+    {
+        //외부에서 씬 전환하고 싶을 때 호출할 필요가 있어보여서...?
+        // OnLoadingScene 을 지역변수가 아니라 매개변수 사용하도록 바꾸면 될듯??
+    }
     private void OnLoadingScene()
     {
         Debug.Log("OnLoadingScene");

@@ -7,6 +7,6 @@ public class ItemJsonData
     public string itemName;
     public string description;
     public string itemType;
-    public int value;
+    public int[] value;
     public float duration;
 }

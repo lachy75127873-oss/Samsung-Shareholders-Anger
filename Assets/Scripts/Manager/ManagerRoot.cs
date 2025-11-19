@@ -8,6 +8,7 @@ public class ManagerRoot : Singleton<ManagerRoot>
     public static ScoreManager scoreManager;
     public static ResourceManager resourceManager;
     public static DataManager dataManager;
+    public static ItemEffectManager itemEffectManager;
 
     [SerializeField] private SceneController sceneController;
 
@@ -19,6 +20,7 @@ public class ManagerRoot : Singleton<ManagerRoot>
         scoreManager = new ScoreManager();
         resourceManager = new ResourceManager();
         dataManager = new DataManager("Data/Item", "Items");
+        itemEffectManager = new ItemEffectManager(null);
 
         gameManager?.Init();
         dataManager?.Init();
@@ -29,8 +31,17 @@ public class ManagerRoot : Singleton<ManagerRoot>
         Debug.Log("ManagerRoot 초기화 완료");
     }
 
+    private void Update()
+    {
+        scoreManager?.Update();
+    }
+
     private void OnDestroy()
     {
         dataManager?.Release();
     }
+    
+    
+    
+    
 }
