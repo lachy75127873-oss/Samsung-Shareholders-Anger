@@ -23,7 +23,7 @@ public class Item : MonoBehaviour
 
     private void Start()
     {
-        itemData = ManagerRoot.dataManager.GetItemData(itemID);
+        itemData = ManagerRoot.Instance.dataManager.GetItemData(itemID);
     }
     #endregion
 
@@ -38,7 +38,6 @@ public class Item : MonoBehaviour
         if(other.CompareTag("ItemCheck"))
         {
             Debug.Log($"[Item] 아이템 사용: {itemData.itemName}");
-
             // 아이템 효과 적용
             ManagerRoot.gameManager.player.ApplyItemEffect(itemData);
 
