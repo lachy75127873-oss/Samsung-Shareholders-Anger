@@ -21,7 +21,9 @@ public class LoadingScene : MonoBehaviour
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName);
         asyncOperation.allowSceneActivation = true;
         while (!asyncOperation.isDone)
-        {loadingBar.fillAmount = asyncOperation.progress;}
-        yield return null;
+        {
+            loadingBar.fillAmount = asyncOperation.progress;
+            yield return null;
+        }
     }
 }
