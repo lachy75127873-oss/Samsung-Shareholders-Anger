@@ -1,6 +1,16 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+public enum PlayerAnimationParameter
+{
+    isJump,
+    isSlide,
+    isDead,
+    isSpin,
+    isInjury
+}
 
 public class PlayerController : MonoBehaviour
 {
@@ -83,8 +93,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /*플레이어 사망시 호출*/
+    #region Event
     public event Action OnPlayerDead;
+    #endregion
 
     #region LifeCycle
 
@@ -126,6 +137,23 @@ public class PlayerController : MonoBehaviour
         ManagerRoot.gameManager.RegisterPlayer(this);
     }
 
+    private void OnEnable()
+    {
+        Debug.Log("OnEnable");
+        var _ = animator.GetBehaviours<PlayerDeadAnimationExitHandler>()
+            .FirstOrDefault(x => x.index == 0);
+        Debug.Log(_);
+        _.OnPlayerDeadAnimationStarted += PlayerController_OnPlayerDeadAnimationStarted;
+    }
+
+    private void OnDisable()
+    {
+        Debug.Log("OnDisable");
+        animator.GetBehaviours<PlayerDeadAnimationExitHandler>()
+            .FirstOrDefault(x => x.index == 0)
+            .OnPlayerDeadAnimationStarted -= PlayerController_OnPlayerDeadAnimationStarted;
+    }
+
     private void Start()
     {
         targetMovePos = rb.position;
@@ -149,6 +177,7 @@ public class PlayerController : MonoBehaviour
         }
 
 #if UNITY_EDITOR
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             StopRun = false;
@@ -483,13 +512,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.layer);
+        //Debug.Log(other.gameObject.layer);
         if (other.gameObject.layer == 7)
         {
             isDead = true;
             StopRun = true;
             animator.SetBool("isDead", true);
-            OnPlayerDead?.Invoke();
         }
 
         if(other.CompareTag("ScoreCheck"))
@@ -501,6 +529,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+
     }
 
     #endregion
@@ -531,6 +560,14 @@ public class PlayerController : MonoBehaviour
     public void DisableMagnetRange()
     {
         itemRootRange?.ApplyDefaultRange();
+    }
+    #endregion
+
+    #region Dead
+    private void PlayerController_OnPlayerDeadAnimationStarted()
+    {
+        Debug.Log("OnPlayerDead?.Invoke();");
+        OnPlayerDead?.Invoke();
     }
     #endregion
 
