@@ -74,7 +74,7 @@ public class GameSceneUI : MonoBehaviour
     /// 아이템 쿨타임용 바
     /// </summary>
     [Tooltip("아이템 쿨타임용 바")]
-    [SerializeField] GameObject itemCooltime;
+    [SerializeField] Image itemCooltime;
     /// <summary>
     /// 아이템 이름이 표시되는 텍스트
     /// </summary>
@@ -90,6 +90,14 @@ public class GameSceneUI : MonoBehaviour
     /// </summary>
     [Tooltip("아이템 아이콘 1")]
     [SerializeField] Sprite itemIcon1;
+    [Tooltip("종료 UI")]
+    [SerializeField] GameObject endUI;
+    [SerializeField] Text currentEndScore;
+    [SerializeField] Text highestEndScore;
+    [SerializeField] Button goToMain;
+    [SerializeField] Button restart;
+    [SerializeField] string mainSceneName;
+    [SerializeField] string gameSceneName;
     /// <summary>
     /// 퍼센트 수치를 재기 시작하는 최소값
     /// </summary>
@@ -97,12 +105,14 @@ public class GameSceneUI : MonoBehaviour
     /// <summary>
     /// 시작시 기본세팅
     /// </summary>
-    private void Start()
+    private void Awake()
     {
         currentScore.text = 0f.ToString();
         currentPercent.text = $"{0f.ToString()}%";//수정해야 됨.
         alarmShow.SetActive(false);
         itemShow.SetActive(false);
+        goToMain.onClick.AddListener(GoToMenu);
+        restart.onClick.AddListener(Restart);
         previousScore = 0;//이전 회차의 점수를 넣어야 함
     }
     /// <summary>
@@ -148,9 +158,26 @@ public class GameSceneUI : MonoBehaviour
         alarmAnimator.SetBool("isActive", false);
         alarmShow.SetActive(false);
     }
+    void EndGame()
+    {
+        currentEndScore.text = 0.ToString();
+        highestEndScore.text = 0.ToString();//점수넣는 자리
+        endUI.SetActive(true);
+    }
+    void GoToMenu()
+    { LoadingScene.LoadScene(mainSceneName); }
+    void Restart()
+    { LoadingScene.LoadScene(gameSceneName); }
     /// <summary>
     /// 아이템 습득시 UI를 띄우며 쿨타임 시작.
     /// </summary>
     internal void GetItem()//아이템 종류는 어떻게 구별하지
-    { }
+    { 
+        itemShow.SetActive(true);
+        itemName.text = string.Empty;
+        itemDescribe.text = string.Empty;
+        itemCooltime.fillAmount = 0f;
+
+
+    }
 }
