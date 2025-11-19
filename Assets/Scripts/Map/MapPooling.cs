@@ -34,7 +34,7 @@ public class MapPooling : MonoBehaviour
     }
     void ActivateRandomMap() // 프리팹 활성화
     {
-        GameObject map = GetInactiveMap(); // map = GetInactiveMap()에서 반환된 랜덤으로 뽑은 맵을 담는다
+        GameObject map = GetRandomeMap(); // map = GetInactiveMap()에서 반환된 랜덤으로 뽑은 맵을 담는다
         if (currentMap != null&&mapCount >= 3) // 3번째 생성할때
         {
             currentMap[0].SetActive(false); // 첫번째 생성된 맵 비활성화
@@ -50,10 +50,9 @@ public class MapPooling : MonoBehaviour
         }
     }
 
-    GameObject GetInactiveMap() // 랜덤으로 뽑기
+    GameObject GetRandomeMap() // 랜덤으로 뽑기
     {
         List<GameObject> inactiveMaps = new List<GameObject>();
-
         foreach (GameObject obj in mapPool) // mapPool길이 만큼 돌면서
         {
             if (!obj.activeInHierarchy) // 비활성화 된것들을
