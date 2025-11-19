@@ -70,7 +70,7 @@ public class SceneController : MonoBehaviour
         targetState = ScreenState.Main_Title;
         
         //로딩씬으로
-        OnLoadingScene();
+        //OnLoadingScene();
     }
 
 
@@ -89,11 +89,11 @@ public class SceneController : MonoBehaviour
          * GameManager - setPlayer
          */
         Debug.Log("MainTitle UI");
-        targetState = ScreenState.Main_Game;
+        //targetState = ScreenState.Main_Game;
         
         // 로딩씬으로
-        Debug.Log("3초 대기");
-        Invoke(nameof(OnLoadingScene), 3);
+        //Debug.Log("3초 대기");
+        //Invoke(nameof(OnLoadingScene), 3);
         
     }
 
@@ -115,8 +115,8 @@ public class SceneController : MonoBehaviour
         //ScoreManager - 최고점수 갱신
         
         // 로딩씬으로
-        Debug.Log("3초 대기");
-        Invoke(nameof(OnLoadingScene), 3);
+        //Debug.Log("3초 대기");
+        //Invoke(nameof(OnLoadingScene), 3);
     }
 
     #endregion
@@ -130,7 +130,7 @@ public class SceneController : MonoBehaviour
         //외부에서 씬 전환하고 싶을 때 호출할 필요가 있어보여서...?
         // OnLoadingScene 을 지역변수가 아니라 매개변수 사용하도록 바꾸면 될듯??
     }
-    private void OnLoadingScene()
+    public void OnLoadingScene(ScreenState targetScreenState)
     {
         Debug.Log("OnLoadingScene");
         
@@ -142,8 +142,8 @@ public class SceneController : MonoBehaviour
         
        //비동기식 로딩씬 await asynk -> 참고만
        Debug.Log("로딩 시작");
-       StartCoroutine(LoadSceneRoutine(targetState.ToString()));
-       Debug.Log($"{targetState.ToString()}으로의 로딩완료");
+       StartCoroutine(LoadSceneRoutine(targetScreenState.ToString()));
+       Debug.Log($"{targetScreenState.ToString()}으로의 로딩완료");
     }
 
     private IEnumerator LoadSceneRoutine(string sceneName)

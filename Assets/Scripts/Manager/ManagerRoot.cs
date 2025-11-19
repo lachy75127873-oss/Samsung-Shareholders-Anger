@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +12,7 @@ public class ManagerRoot : Singleton<ManagerRoot>
     [SerializeField] private GameManager _gameManager;
     public SceneController sceneController;
     public AudioManager audioManager;
+    [SerializeField] private GameManager gameManager;
 
     public static GameManager gameManager { get; private set; }
 
