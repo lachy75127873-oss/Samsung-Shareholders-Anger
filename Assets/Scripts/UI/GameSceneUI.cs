@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-
 public class GameSceneUI : MonoBehaviour
 {
     [Header("주가 표시창")]
@@ -92,15 +91,14 @@ public class GameSceneUI : MonoBehaviour
     internal bool secondItem = false;
     private void Awake()
     {
-        UiManager.instance.InputGameMenu(this);
+        UiManager.Instance.InputGameMenu(this);
         currentScore.text = 0f.ToString();
         currentPercent.text = $"{0f.ToString()}%";//수정해야 됨.
         alarmShow.SetActive(false);
-        goToMain.onClick.AddListener(UiManager.instance.GoToMenu);
-        restart.onClick.AddListener(UiManager.instance.Restart);
+        goToMain.onClick.AddListener(UiManager.Instance.GoToMenu);
+        restart.onClick.AddListener(UiManager.Instance.Restart);
         previousScore = 0;//이전 회차의 점수를 넣어야 함
     }
-
     /// <summary>
     /// 아이템 습득시 UI를 띄우며 쿨타임 시작.
     /// </summary>

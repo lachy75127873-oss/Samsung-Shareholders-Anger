@@ -1,18 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
-
 public class UiManager : MonoBehaviour
 {
-    public static UiManager instance;
-    public UiManager Instance
+    private static UiManager instance;
+    public static UiManager Instance
     {
         get
         {
-            if (instance == null)
-            {
-                instance = this;
-            }
             return instance;
         }
     }
@@ -69,6 +64,7 @@ public class UiManager : MonoBehaviour
     {
         LoadingScene.nextScene = sceneName;
         SceneManager.LoadScene("Loading");
+        ManagerRoot.Instance.sceneController.OnLoadingScene(ScreenState.Main_Game);
     }
     /// <summary>
     /// 로딩바를 코루틴으로 실행

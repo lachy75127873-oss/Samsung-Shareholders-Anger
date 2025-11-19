@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StartMenuScene : MonoBehaviour
@@ -51,33 +48,14 @@ public class StartMenuScene : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        UiManager.instance.InputStartMenu(this);
+        UiManager.Instance.InputStartMenu(this);
         lastScore.text = 0.ToString();
         highestScore.text = 0.ToString();
         percentScore.text = $"{0.ToString()}%";//임시임. 스코어 매니저랑 상의해야 됨.
-        startButton.onClick.AddListener(UiManager.instance.StartGame);
-        optionButton.onClick.AddListener(UiManager.instance.TurnOption);
-        optionExitButton.onClick.AddListener(UiManager.instance.ExitOption);
+        startButton.onClick.AddListener(UiManager.Instance.StartGame);
+        optionButton.onClick.AddListener(UiManager.Instance.TurnOption);
+        optionExitButton.onClick.AddListener(UiManager.Instance.ExitOption);
     }
-
-    /// <summary>
-    /// 게임 시작버튼을 누르면 게임씬으로 이동함.
-    /// </summary>
-    void StartGame()
-    {
-        ManagerRoot.Instance.sceneController.OnLoadingScene(ScreenState.Main_Game);
-    }
-    /// <summary>
-    /// 옵션 버튼을 누르면 옵션창이 뜸.
-    /// </summary>
-    void TurnOption()
-    { optionUI.SetActive(true); }
-    /// <summary>
-    /// 옵션창에서 나가기 누르면 옵션창이 꺼짐.
-    /// </summary>
-    void ExitOption()
-    { optionUI.SetActive(false); }
-
     private void OnDestroy()
     {
         startButton.onClick.RemoveAllListeners();
