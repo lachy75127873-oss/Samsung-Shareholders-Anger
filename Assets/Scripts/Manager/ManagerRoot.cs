@@ -21,7 +21,7 @@ public class ManagerRoot : Singleton<ManagerRoot>
         scoreManager = new ScoreManager();
         resourceManager = new ResourceManager();
         dataManager = new DataManager("Data/Item", "Items");
-        itemEffectManager = new ItemEffectManager(null);
+        itemEffectManager = new ItemEffectManager();
 
         gameManager?.Init();
         dataManager?.Init();
@@ -36,14 +36,11 @@ public class ManagerRoot : Singleton<ManagerRoot>
     private void Update()
     {
         scoreManager?.Update();
+        itemEffectManager?.Update();
     }
 
     private void OnDestroy()
     {
         dataManager?.Release();
     }
-    
-    
-    
-    
 }
