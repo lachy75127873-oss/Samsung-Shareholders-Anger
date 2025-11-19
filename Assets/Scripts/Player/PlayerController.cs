@@ -139,17 +139,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("OnEnable");
-        var _ = animator.GetBehaviours<PlayerDeadAnimationExitHandler>()
-            .FirstOrDefault(x => x.index == 0);
-        Debug.Log(_);
-        _.OnPlayerDeadAnimationStarted += PlayerController_OnPlayerDeadAnimationStarted;
+        animator.GetBehaviours<PlayerDeadAnimationEndHandler>()
+            .FirstOrDefault(x => x.index == 0)
+            .OnPlayerDeadAnimationStarted += PlayerController_OnPlayerDeadAnimationStarted;
     }
 
     private void OnDisable()
     {
-        Debug.Log("OnDisable");
-        animator.GetBehaviours<PlayerDeadAnimationExitHandler>()
+        animator.GetBehaviours<PlayerDeadAnimationEndHandler>()
             .FirstOrDefault(x => x.index == 0)
             .OnPlayerDeadAnimationStarted -= PlayerController_OnPlayerDeadAnimationStarted;
     }
@@ -565,10 +562,8 @@ public class PlayerController : MonoBehaviour
 
     #region Dead
     private void PlayerController_OnPlayerDeadAnimationStarted()
-    {
-        Debug.Log("OnPlayerDead?.Invoke();");
-        OnPlayerDead?.Invoke();
-    }
+        => OnPlayerDead?.Invoke();
+    
     #endregion
 
 }
