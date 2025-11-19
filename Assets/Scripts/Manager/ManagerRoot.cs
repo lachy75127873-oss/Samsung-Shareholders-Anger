@@ -35,7 +35,6 @@ public class ManagerRoot : Singleton<ManagerRoot>
 
     private void Update()
     {
-        scoreManager?.Update();
         itemEffectManager?.Update();
     }
 
