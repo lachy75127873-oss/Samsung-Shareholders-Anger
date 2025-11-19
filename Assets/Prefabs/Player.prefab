@@ -2032,7 +2032,7 @@ MonoBehaviour:
   injuryLayerMask:
     serializedVersion: 2
     m_Bits: 128
-  itemRootRange: {fileID: 0}
+  itemRootRange: {fileID: 7852027405579271116}
   isDead: 0
   isGrounded: 0
   isJump: 0
@@ -2543,4 +2543,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capsuleCollider: {fileID: 4270153133439688536}
-  magnetRadius: 3.75
