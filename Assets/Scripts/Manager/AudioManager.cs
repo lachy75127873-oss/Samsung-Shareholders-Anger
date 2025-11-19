@@ -1,13 +1,20 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
+public enum AudioMixerGroupName
+{
+    Master,
+    BGM,
+    SFX
+}
 
 public class AudioManager : MonoBehaviour
 {
     [Header("UserAudioMixers")]
-    [SerializeField] AudioMixer master;
-    [SerializeField] AudioMixer bgm;
-    [SerializeField] AudioMixer sfx;
+    [SerializeField] AudioMixerGroup master;
+    [SerializeField] AudioMixerGroup bgm;
+    [SerializeField] AudioMixerGroup sfx;
 
     [Header("AuioSources")]
     [SerializeField] AudioSource bgmAudioSource;
@@ -24,41 +31,37 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioClip jumpSFX;
     [SerializeField] AudioClip getItemSFX;
 
+    private Dictionary<AudioMixerGroupName, AudioMixerGroup> UserAudios;
+
     public void Init()
     {
         bgmAudioSource = GetComponents<AudioSource>()[0];
         interfaceAudioSource = GetComponents<AudioSource>()[1];
         inGameAudioSource = GetComponents<AudioSource>()[2];
+
+        UserAudios = new()
+        {
+            { AudioMixerGroupName.Master, master},
+            { AudioMixerGroupName.BGM, master},
+            { AudioMixerGroupName.SFX, master},
+        };
     }
 
     #region UserUIAdjust
-    public void SetMasterVolume(float volume)
-        => master.SetFloat("Master", volume);
-    public void SetBGMVolume(float volume)
-    => bgm.SetFloat("BGM", volume);
-    public void SetSFXVolume(float volume)
-    => sfx.SetFloat("SFX", volume);
+    public void SetVolume(AudioMixerGroupName name, float value)
+    {
+        UserAudios[name].audioMixer.SetFloat(name.ToString(), value);
+    }
 
-    public float GetMasterVolume()
+    public float GetVolume(AudioMixerGroupName name)
     {
-        if(master.GetFloat("Master", out var value))
-            return value;
+        if (UserAudios[name].audioMixer.GetFloat(nameof(name), out var volume))
+            return volume;
         else
+        {
+            Debug.Log($"Can't Find AudioMixerGroup: {name}");
             return 0f;
-    }
-    public float GetBGMVolume()
-    {
-        if (bgm.GetFloat("BGM", out var value))
-            return value;
-        else
-            return 0f;
-    }
-    public float GetSFXVolume()
-    {
-        if (sfx.GetFloat("SFX", out var value))
-            return value;
-        else
-            return 0f;
+        }
     }
 
     #endregion
