@@ -248,6 +248,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 174790542622495474, guid: 57353e4ff1d7373438a03f30fabe8e52,
+        type: 3}
+      propertyPath: moveScene
+      value: UITest2
+      objectReference: {fileID: 0}
+    - target: {fileID: 174790542622495474, guid: 57353e4ff1d7373438a03f30fabe8e52,
+        type: 3}
+      propertyPath: testButton
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 911802786657003345, guid: 57353e4ff1d7373438a03f30fabe8e52,
         type: 3}
       propertyPath: m_AnchorMax.y

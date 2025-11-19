@@ -100,6 +100,7 @@ public class GameSceneUI : MonoBehaviour
     private void Start()
     {
         currentScore.text = 0f.ToString();
+        currentPercent.text = $"{0f.ToString()}%";//수정해야 됨.
         alarmShow.SetActive(false);
         itemShow.SetActive(false);
         previousScore = 0;//이전 회차의 점수를 넣어야 함

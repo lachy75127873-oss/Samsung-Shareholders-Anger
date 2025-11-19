@@ -46,6 +46,9 @@ public class StartMenuScene : MonoBehaviour
     /// </summary>
     [Tooltip("전판 점수 대비 퍼센트")]
     [SerializeField] Text percentScore;
+    /// <summary>
+    /// 초기 세팅, 버튼에 함수 등록 + 스코어 출력
+    /// </summary>
     private void Awake()
     {
         lastScore.text = 0.ToString();
@@ -55,10 +58,26 @@ public class StartMenuScene : MonoBehaviour
         optionButton.onClick.AddListener(TurnOption);
         optionExitButton.onClick.AddListener(ExitOption);
     }
+    /// <summary>
+    /// 게임 시작버튼을 누르면 게임씬으로 이동함.
+    /// </summary>
     void StartGame()
-    { SceneManager.LoadSceneAsync(gameSceneName); }
+    { LoadingScene.LoadScene(gameSceneName); }
+    /// <summary>
+    /// 옵션 버튼을 누르면 옵션창이 뜸.
+    /// </summary>
     void TurnOption()
     { optionUI.SetActive(true); }
+    /// <summary>
+    /// 옵션창에서 나가기 누르면 옵션창이 꺼짐.
+    /// </summary>
     void ExitOption()
     { optionUI.SetActive(false); }
+
+    private void OnDestroy()
+    {
+        startButton.onClick.RemoveAllListeners();
+        optionButton.onClick.RemoveAllListeners();
+        optionExitButton.onClick.RemoveAllListeners();
+    }
 }
