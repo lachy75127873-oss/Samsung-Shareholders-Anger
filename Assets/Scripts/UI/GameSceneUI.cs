@@ -1,0 +1,138 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class GameSceneUI : MonoBehaviour
+{
+    [Header("주가 표시창")]
+    /// <summary>
+    /// 현재 주가를 띄우는 텍스트
+    /// </summary>
+    [Tooltip("현재 주가를 띄우는 텍스트")]
+    [SerializeField] Text currentScore;
+    /// <summary>
+    /// 이전 스코어를 저장하는 변수.
+    /// </summary>
+    float previousScore = 0;
+    /// <summary>
+    /// 상승 하강 아이콘 위치
+    /// </summary>
+    [Tooltip("상승 하강 아이콘 위치")]
+    [SerializeField] GameObject icon;
+    /// <summary>
+    /// 전일보다 주가가 낮을때 뜨는 아이콘
+    /// </summary>
+    [Tooltip("전일보다 주가가 낮을때 뜨는 아이콘")]
+    [SerializeField] Sprite lowerIcon;
+    /// <summary>
+    /// 전일보다 주가가 높을때 뜨는 아이콘
+    /// </summary>
+    [Tooltip("전일보다 주가가 높을때 뜨는 아이콘")]
+    [SerializeField] Sprite higherIcon;
+    /// <summary>
+    /// 전일대비 퍼센트 표시하는 텍스트
+    /// </summary>
+    [Tooltip("전일대비 퍼센트 표시하는 텍스트")]
+    [SerializeField] Text currentPercent;
+    [Header("알림 창")]
+    /// <summary>
+    /// 주가 상승시 알람이 뜨는 창
+    /// </summary>
+    [Tooltip("주가 상승시 알람이 뜨는 창")]
+    [SerializeField] GameObject alarmShow;
+    /// <summary>
+    /// 창 표시 애니메이터
+    /// </summary>
+    [Tooltip("창 표시 애니메이터")]
+    [SerializeField] Animator alarmAnimator;
+    /// <summary>
+    /// 뉴스 타이틀이 표시되는 텍스트
+    /// </summary>
+    [Tooltip("뉴스 타이틀이 표시되는 텍스트")]
+    [SerializeField] Text newsTitle;
+    /// <summary>
+    /// 뉴스 내용이 표시되는 텍스트
+    /// </summary>
+    [Tooltip("뉴스 내용이 표시되는 텍스트")]
+    [SerializeField] Text newsDescribe;
+    [Header("아이템 습득 창")]
+    /// <summary>
+    /// 아이템 창
+    /// </summary>
+    [Tooltip("아이템 창")]
+    [SerializeField] GameObject itemShow;
+    /// <summary>
+    /// 아이템 아이콘이 표시되는 위치
+    /// </summary>
+    [Tooltip("아이템 아이콘이 표시되는 위치")]
+    [SerializeField] GameObject itemIcon;
+    /// <summary>
+    /// 아이템 쿨타임용 바
+    /// </summary>
+    [Tooltip("아이템 쿨타임용 바")]
+    [SerializeField] GameObject itemCooltime;
+    /// <summary>
+    /// 아이템 이름이 표시되는 텍스트
+    /// </summary>
+    [Tooltip("아이템 이름이 표시되는 텍스트")]
+    [SerializeField] Text itemName;
+    /// <summary>
+    /// 아이템 설명이 표시되는 텍스트
+    /// </summary>
+    [Tooltip("아이템 설명이 표시되는 텍스트")]
+    [SerializeField] Text itemDescribe;
+    /// <summary>
+    /// 아이템 아이콘 1
+    /// </summary>
+    [Tooltip("아이템 아이콘 1")]
+    [SerializeField] Sprite itemIcon1;
+    /// <summary>
+    /// 시작시 기본세팅
+    /// </summary>
+    private void Start()
+    {
+        currentScore.text = 0f.ToString();
+        alarmShow.SetActive(false);
+        itemShow.SetActive(false);
+    }
+    /// <summary>
+    /// score에 넣은 값이 현재 주가로 표시됨.
+    /// </summary>
+    /// <param name="score"></param>
+    internal void InputScore(float score)//점수를 업데이트로 계속 띄우는거 비효율적이니까 점수 습득할때 이 함수를 가져다 쓰는거 어떨까요?
+    {
+        currentScore.text = score.ToString("N2");
+        if (previousScore > 0)
+        {
+            float percent = ((score - previousScore) / previousScore) * 100;
+            alarmShow.SetActive(true);
+            alarmAnimator.SetBool("isActive", true);
+            newsTitle.text = $"지금 삼성전자 가격이 {percent:N2}% 상승했어요";
+            newsDescribe.text = $"금일 장 중 최고가를 기록했어요. ({score:N2}원)";
+        }
+        else
+        {
+            alarmShow.SetActive(true);
+            alarmAnimator.SetBool("isActive", true);
+            newsTitle.text = $"정규장 개시! 시초가 ({score:N2}원) 형성";
+            newsDescribe.text = $"금일 장 중 최고가를 기록했어요. ({score:N2}원)";
+        }
+            previousScore = score;
+        CancelInvoke("AlarmOff");
+        Invoke("AlarmOff",10);
+    }
+    /// <summary>
+    /// 알람을 사라지게 하는 함수.
+    /// </summary>
+    void AlarmOff()
+    {
+        alarmAnimator.SetBool("isActive", false);
+        alarmShow.SetActive(false);
+    }
+    /// <summary>
+    /// 아이템 습득시 UI를 띄우며 쿨타임 시작.
+    /// </summary>
+    internal void GetItem()//아이템 종류는 어떻게 구별하지
+    { }
+}
