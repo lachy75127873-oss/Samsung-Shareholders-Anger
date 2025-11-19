@@ -14,6 +14,7 @@ public enum PlayerAnimationParameter
 
 public class PlayerController : MonoBehaviour
 {
+    #region SerializeFields
     [Header("Animator")]
     [SerializeField] Animator animator;
 
@@ -70,8 +71,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool StopRun = false;
     [SerializeField][Tooltip("현재 Pos Debug용")] Vector3 currentPos;
     [SerializeField][Tooltip("현재 Velocity Debug용")] Vector3 currentVelocity;
-#endif
 
+#endif
+    #endregion
+
+    #region Properties
     public bool IsGrounded
     {
         get => isGrounded;
@@ -86,12 +90,14 @@ public class PlayerController : MonoBehaviour
                     isAirborne = false;
 
                 }
-                animator.SetBool("isJump", false);
+                animator.SetBool(nameof(PlayerAnimationParameter.isJump), false);
             }
 
             isGrounded = value;
         }
     }
+
+    #endregion
 
     #region Event
     public event Action OnPlayerDead;
@@ -160,7 +166,7 @@ public class PlayerController : MonoBehaviour
     {
         /*슬라이드 애니메이션이 끝나야 슬라이드가 끝*/
         if (isSlide)
-            isSlide = animator.GetBool("isSlide");
+            isSlide = animator.GetBool(nameof(PlayerAnimationParameter.isSlide));
 
         if (isInjured)
         {
@@ -169,7 +175,7 @@ public class PlayerController : MonoBehaviour
             {
                 isInjured = false;
                 injuryTimer = default;
-                animator.SetFloat("isInjury", 0f);
+                animator.SetFloat(nameof(PlayerAnimationParameter.isInjury), 0f);
             }
         }
 
@@ -188,16 +194,16 @@ public class PlayerController : MonoBehaviour
             rb.position = default;
             rb.useGravity = true;
 
-            animator.SetBool("isJump", false);
-            animator.SetBool("isSlide", false);
-            animator.SetBool("isDead", false);
+            animator.SetBool(nameof(PlayerAnimationParameter.isJump), false);
+            animator.SetBool(nameof(PlayerAnimationParameter.isSlide), false);
+            animator.SetBool(nameof(PlayerAnimationParameter.isDead), false);
         }
         else if (Input.GetKeyDown(KeyCode.X))
         {
             Debug.Log("게임 오버");
             isDead = true;
             OnPlayerDead?.Invoke();
-            animator.SetBool("isDead", true);
+            animator.SetBool(nameof(PlayerAnimationParameter.isDead), true);
         }
 
         else if (Input.GetKeyDown(KeyCode.I))
@@ -282,12 +288,12 @@ public class PlayerController : MonoBehaviour
             isJump = true;
 
             // 애니메이션 활성화
-            animator.SetBool("isJump", true);
+            animator.SetBool(nameof(PlayerAnimationParameter.isJump), true);
 
             // 슬라이딩 중이었을 경우
             isSlide = false;
-            if (animator.GetBool("isSlide"))
-                animator.SetBool("isSlide", false);
+            if (animator.GetBool(nameof(PlayerAnimationParameter.isSlide)))
+                animator.SetBool(nameof(PlayerAnimationParameter.isSlide), false);
         }
     }
     public void OnSlide(InputAction.CallbackContext context)
@@ -301,13 +307,13 @@ public class PlayerController : MonoBehaviour
             isSlide = true;
 
             // 애니메이션 활성화
-            animator.SetBool("isSlide", true);
+            animator.SetBool(nameof(PlayerAnimationParameter.isSlide), true);
 
             // 점프 중이었을 경우
             isAirborne = false;
             airborneTimer = default;
-            if (animator.GetBool("isJump"))
-                animator.SetBool("isJump", false);
+            if (animator.GetBool(nameof(PlayerAnimationParameter.isJump)))
+                animator.SetBool(nameof(PlayerAnimationParameter.isJump), false);
         }
     }
     public void OnMoveLeft(InputAction.CallbackContext context)
@@ -323,7 +329,7 @@ public class PlayerController : MonoBehaviour
             if (isSlide)
             {
                 isSlide = false;
-                animator.SetBool("isSlide", false);
+                animator.SetBool(nameof(PlayerAnimationParameter.isSlide), false);
             }
 
             lastSideInput = false;
@@ -342,7 +348,7 @@ public class PlayerController : MonoBehaviour
             if (isSlide)
             {
                 isSlide = false;
-                animator.SetBool("isSlide", false);
+                animator.SetBool(nameof(PlayerAnimationParameter.isSlide), false);
             }
 
             lastSideInput = true;
@@ -399,8 +405,8 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(rays[i], injuryRayLength, injuryLayerMask))
             {
                 isInjured = true;
-                animator.SetBool("isSpin", true);
-                animator.SetFloat("isInjury", 1f);
+                animator.SetBool(nameof(PlayerAnimationParameter.isSpin), true);
+                animator.SetFloat(nameof(PlayerAnimationParameter.isInjury), 1f);
                 return true;
             }
         }
@@ -514,13 +520,13 @@ public class PlayerController : MonoBehaviour
         {
             isDead = true;
             StopRun = true;
-            animator.SetBool("isDead", true);
+            animator.SetBool(nameof(PlayerAnimationParameter.isDead), true);
         }
 
         if(other.CompareTag("ScoreCheck"))
         {
             ManagerRoot.Instance.scoreManager.combo += 1;
-            Debug.LogWarning(ManagerRoot.Instance.scoreManager.combo);
+            //Debug.LogWarning(ManagerRoot.Instance.scoreManager.combo);
         }
     }
 
@@ -540,7 +546,7 @@ public class PlayerController : MonoBehaviour
     public void SetJumpPower(float value)
     {
         jumpPower = value;
-        Debug.Log($"[Item] 점프력 변경: {value}");
+        //Debug.Log($"[Item] 점프력 변경: {value}");
     }
 
     public void SetMaxHeight(float value)
@@ -565,5 +571,4 @@ public class PlayerController : MonoBehaviour
         => OnPlayerDead?.Invoke();
     
     #endregion
-
 }
