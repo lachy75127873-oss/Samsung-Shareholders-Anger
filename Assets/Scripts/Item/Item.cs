@@ -35,11 +35,12 @@ public class Item : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if(other.CompareTag("ItemCheck"))
         {
-            //Player player = other.GetComponent<PlayerController>(); // GameManger에서 플레이어 참조 가져오기
-            //if(player!=null)
-            //player.UseItme(itemData)
+            Debug.Log($"[Item] 아이템 사용: {itemData.itemName}");
+
+            // 아이템 효과 적용
+            ManagerRoot.gameManager.player.ApplyItemEffect(itemData);
 
             meshRenderer.enabled = false;
             itemCollider.enabled = false;

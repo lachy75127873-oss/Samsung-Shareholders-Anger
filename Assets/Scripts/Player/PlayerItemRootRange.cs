@@ -3,7 +3,6 @@ using UnityEngine;
 public class PlayerItemRootRange : MonoBehaviour
 {
     [SerializeField] CapsuleCollider capsuleCollider;
-    [SerializeField][Range(0, 10)] float magnetRadius;
     private float defaultRadius;
 
     private void Reset()
@@ -16,16 +15,14 @@ public class PlayerItemRootRange : MonoBehaviour
         defaultRadius = capsuleCollider.radius;
     }
 
-    public void ApplyMagnetRange()
+    public void ApplyMagnetRange(float range)
     {
-        capsuleCollider.radius = magnetRadius;
+        capsuleCollider.radius = range;
+        Debug.Log($"[Magnet] 자석 범위 활성화: {range}m");
     }
+
     public void ApplyDefaultRange()
     {
         capsuleCollider.radius = defaultRadius;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
     }
 }
