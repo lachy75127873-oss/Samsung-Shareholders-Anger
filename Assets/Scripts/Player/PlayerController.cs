@@ -385,7 +385,11 @@ public class PlayerController : MonoBehaviour
     private void Dead()
     {
         rb.velocity = Vector3.zero;
+
+        if(lastSideInput != null)
+            ResotreLastRail();
         rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
+        isDead = false;
     }
     #endregion
 
@@ -485,6 +489,8 @@ public class PlayerController : MonoBehaviour
     }
     bool IsSideMoving()
     {
+        if (rb.position.x == targetMovePos.x)
+            lastSideInput = null;
         return rb.position.x != targetMovePos.x;
     }
     bool CheckGrouded()
@@ -518,8 +524,9 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(other.gameObject.layer);
         if (other.gameObject.layer == 7)
         {
-            isDead = true;
             StopRun = true;
+            animator.SetBool(nameof(PlayerAnimationParameter.isSpin), true);
+            isDead = true;
             animator.SetBool(nameof(PlayerAnimationParameter.isDead), true);
         }
 

@@ -629,7 +629,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded409c5d63b8d24cae19fe3c0c761ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parameter: isSlide
+  index: 0
+  parameter: 1
 --- !u!1102 &326324742061386189
 AnimatorState:
   serializedVersion: 6
@@ -696,7 +697,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded409c5d63b8d24cae19fe3c0c761ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parameter: isSpin
+  index: 0
+  parameter: 3
 --- !u!1102 &1710614210572203736
 AnimatorState:
   serializedVersion: 6
@@ -709,7 +711,8 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 2261913856192230806}
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: 8340761498893025445}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -902,6 +905,19 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &8340761498893025445
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd62766c23228b04dab4d0d389c3f444, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  index: 0
 --- !u!1102 &8780384405208207581
 AnimatorState:
   serializedVersion: 6
