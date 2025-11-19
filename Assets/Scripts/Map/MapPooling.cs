@@ -3,36 +3,39 @@ using UnityEngine;
 
 public class MapPooling : MonoBehaviour
 {
-    [SerializeField]
+    [SerializeField] // 난이도에 맞는 프리팹 가져오기
     private GameObject[] easyMaps;
     [SerializeField]
     private GameObject[] normalMaps;
     [SerializeField]
     private GameObject[] hardMaps;
    
+    //각각의 프리팹들을 저장하는 리스트
     private List<GameObject> easyMappool = new List<GameObject>();
     private List<GameObject> normalMappool = new List<GameObject>();
     private List<GameObject> hardMappool = new List<GameObject>();
 
-
+    //비활성화 된 맵을 담고 랜덤으로 하나를 뽑는 리스트
     List<GameObject> RandMap = new List<GameObject>();
 
     private float spawnPos = 0f;
     private Transform player;
     private List<GameObject> currentMap = new List<GameObject>();
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform; // 플레이어 위치받아오기
         InitPool();
-        ActivateRandomMap();
+        ActivateMap();
     }
     private void Update()
     {
         if (player.position.z >= spawnPos - 120f) // 플레이어 위치가 120 마다 (스타트에서 맵한개 생성후 플레이어가 0이상에서 시작하기 때문에 시작시 맵 2개 생성후 진행
         {
-            ActivateRandomMap(); // 맵생성
+            ActivateMap(); // 맵생성
         }
     }
+    #region"Pooling"
     private void InitPool() // 프리팹 받아온걸 생성 후 비활성화, 풀에 넣기
     {
         for (int i = 0; i < easyMaps.Length; i++) // 받아온 프리팹 길이만큼 반복
@@ -63,7 +66,10 @@ public class MapPooling : MonoBehaviour
             }
         }
     }
-    void ActivateRandomMap() // 프리팹 활성화
+    #endregion
+
+    #region"ActiveMap"
+    void ActivateMap() // 프리팹 활성화
     {
         GameObject map = GetRandomeMap(); // map = GetInactiveMap()에서 반환된 랜덤으로 뽑은 맵을 담는다
         if (currentMap.Count >= 3) // 3번째 생성할때
@@ -79,11 +85,13 @@ public class MapPooling : MonoBehaviour
             spawnPos += 120f; // 다음 맵 위치를 조정하기위해 프리팹(맵)의 전체길이를 추가하여 뒤에 이어붙힌다
         }
     }
+    #endregion
 
+    #region"SetRandomMap"
     GameObject GetRandomeMap() // 랜덤으로 뽑기
     {
 
-        int level = Mathf.FloorToInt(player.transform.position.z / 500f);
+        int level = Mathf.FloorToInt(player.transform.position.z / 500f); // 거리 500마다 레벨 증가
         level = Mathf.Clamp(level, 1, 5);
 
         switch (level)
@@ -114,8 +122,9 @@ public class MapPooling : MonoBehaviour
 
         return null; // 모든것이 활성화 되어있다면 null을 반환한다
     }
+    #endregion
 
-
+    #region"DeactiveList"
     private void SetEasyMap()
     {
         foreach (GameObject obj in easyMappool) // mapPool길이 만큼 돌면서
@@ -126,18 +135,19 @@ public class MapPooling : MonoBehaviour
     }
     private void SetNormalMap()
     {
-        foreach (GameObject obj in normalMappool) // mapPool길이 만큼 돌면서
+        foreach (GameObject obj in normalMappool)
         {
-            if (!obj.activeInHierarchy) // 비활성화 된것들을
-                RandMap.Add(obj); // 리스트에 담는다
+            if (!obj.activeInHierarchy)
+                RandMap.Add(obj);
         }
     }
     private void SetHardMap()
     {
-        foreach (GameObject obj in hardMappool) // mapPool길이 만큼 돌면서
+        foreach (GameObject obj in hardMappool)
         {
-            if (!obj.activeInHierarchy) // 비활성화 된것들을
-                RandMap.Add(obj); // 리스트에 담는다
+            if (!obj.activeInHierarchy)
+                RandMap.Add(obj);
         }
     }
+    #endregion
 }
