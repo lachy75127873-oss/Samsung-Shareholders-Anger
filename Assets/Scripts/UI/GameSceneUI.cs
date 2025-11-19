@@ -90,6 +90,9 @@ public class GameSceneUI : MonoBehaviour
     /// </summary>
     [Tooltip("아이템 아이콘 1")]
     [SerializeField] Sprite itemIcon1;
+    /// <summary>
+    /// 종료 UI
+    /// </summary>
     [Tooltip("종료 UI")]
     [SerializeField] GameObject endUI;
     [SerializeField] Text currentEndScore;
@@ -105,6 +108,8 @@ public class GameSceneUI : MonoBehaviour
     /// <summary>
     /// 시작시 기본세팅
     /// </summary>
+    bool firstItem = false;
+    bool secondItem = false;
     private void Awake()
     {
         currentScore.text = 0f.ToString();
@@ -158,26 +163,50 @@ public class GameSceneUI : MonoBehaviour
         alarmAnimator.SetBool("isActive", false);
         alarmShow.SetActive(false);
     }
+    /// <summary>
+    /// 게임을 끝내는 함수
+    /// </summary>
     void EndGame()
     {
         currentEndScore.text = 0.ToString();
         highestEndScore.text = 0.ToString();//점수넣는 자리
         endUI.SetActive(true);
     }
+    /// <summary>
+    /// 매뉴로 가는 키
+    /// </summary>
     void GoToMenu()
     { LoadingScene.LoadScene(mainSceneName); }
+    /// <summary>
+    /// 재시작 키
+    /// </summary>
     void Restart()
     { LoadingScene.LoadScene(gameSceneName); }
     /// <summary>
     /// 아이템 습득시 UI를 띄우며 쿨타임 시작.
     /// </summary>
-    internal void GetItem()//아이템 종류는 어떻게 구별하지
-    { 
-        itemShow.SetActive(true);
-        itemName.text = string.Empty;
-        itemDescribe.text = string.Empty;
-        itemCooltime.fillAmount = 0f;
-
-
+    internal void GetItem(string name,string describe)//아이템 종류는 어떻게 구별하지
+    {
+        if (!firstItem)
+        {
+            itemShow.SetActive(true);
+            itemName.text = string.Empty;
+            itemDescribe.text = string.Empty;
+            itemCooltime.fillAmount = 0f;
+            firstItem = true;
+        }
+        else if(firstItem)
+        {
+            itemShow.SetActive(true);
+            itemName.text = string.Empty;
+            itemDescribe.text = string.Empty;
+            itemCooltime.fillAmount = 0f;
+            secondItem = true;
+        }
+    }
+    private void OnDestroy()
+    {
+        goToMain.onClick.RemoveAllListeners();
+        restart.onClick.RemoveAllListeners();
     }
 }
