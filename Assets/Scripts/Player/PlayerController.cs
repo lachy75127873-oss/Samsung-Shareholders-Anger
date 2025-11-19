@@ -205,7 +205,7 @@ public class PlayerController : MonoBehaviour
 
         else if (Input.GetKeyDown(KeyCode.I))
         {
-            ManagerRoot.itemEffectManager?.DebugLogStatus();
+            ManagerRoot.Instance.itemEffectManager?.DebugLogStatus();
         }
 #endif
     }
@@ -522,8 +522,8 @@ public class PlayerController : MonoBehaviour
 
         if(other.CompareTag("ScoreCheck"))
         {
-            ManagerRoot.scoreManager.combo += 1;
-            Debug.LogWarning(ManagerRoot.scoreManager.combo);
+            ManagerRoot.Instance.scoreManager.combo += 1;
+            Debug.LogWarning(ManagerRoot.Instance.scoreManager.combo);
         }
     }
 
@@ -537,7 +537,7 @@ public class PlayerController : MonoBehaviour
     #region Item
     public void ApplyItemEffect(ItemData itemData)
     {
-        ManagerRoot.itemEffectManager?.ApplyItem(itemData);
+        ManagerRoot.Instance.itemEffectManager?.ApplyItem(itemData);
     }
 
     public void SetJumpPower(float value)
