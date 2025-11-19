@@ -64,32 +64,12 @@ public class GameSceneUI : MonoBehaviour
     /// 아이템 창
     /// </summary>
     [Tooltip("아이템 창")]
-    [SerializeField] GameObject itemShow;
+    [SerializeField] GameObject itemUIPrefeb;
     /// <summary>
-    /// 아이템 아이콘이 표시되는 위치
+    /// 아이템 창 2
     /// </summary>
-    [Tooltip("아이템 아이콘이 표시되는 위치")]
-    [SerializeField] GameObject itemIcon;
-    /// <summary>
-    /// 아이템 쿨타임용 바
-    /// </summary>
-    [Tooltip("아이템 쿨타임용 바")]
-    [SerializeField] Image itemCooltime;
-    /// <summary>
-    /// 아이템 이름이 표시되는 텍스트
-    /// </summary>
-    [Tooltip("아이템 이름이 표시되는 텍스트")]
-    [SerializeField] Text itemName;
-    /// <summary>
-    /// 아이템 설명이 표시되는 텍스트
-    /// </summary>
-    [Tooltip("아이템 설명이 표시되는 텍스트")]
-    [SerializeField] Text itemDescribe;
-    /// <summary>
-    /// 아이템 아이콘 1
-    /// </summary>
-    [Tooltip("아이템 아이콘 1")]
-    [SerializeField] Sprite itemIcon1;
+    [Tooltip("아이템 창 2")]
+    [SerializeField] GameObject itemUIPrefeb2;
     /// <summary>
     /// 종료 UI
     /// </summary>
@@ -115,7 +95,6 @@ public class GameSceneUI : MonoBehaviour
         currentScore.text = 0f.ToString();
         currentPercent.text = $"{0f.ToString()}%";//수정해야 됨.
         alarmShow.SetActive(false);
-        itemShow.SetActive(false);
         goToMain.onClick.AddListener(GoToMenu);
         restart.onClick.AddListener(Restart);
         previousScore = 0;//이전 회차의 점수를 넣어야 함
@@ -163,6 +142,17 @@ public class GameSceneUI : MonoBehaviour
         alarmAnimator.SetBool("isActive", false);
         alarmShow.SetActive(false);
     }
+    internal void GetItem(string name, string describe)//아이템 종류는 어떻게 구별하지
+    {
+        itemUIPrefeb.SetActive(true);
+        itemUIPrefeb2.SetActive(true);
+    }
+
+    void ItemOff(GameObject itemUI)
+    {
+
+        itemUI.SetActive(false);
+    }
     /// <summary>
     /// 게임을 끝내는 함수
     /// </summary>
@@ -185,25 +175,6 @@ public class GameSceneUI : MonoBehaviour
     /// <summary>
     /// 아이템 습득시 UI를 띄우며 쿨타임 시작.
     /// </summary>
-    internal void GetItem(string name,string describe)//아이템 종류는 어떻게 구별하지
-    {
-        if (!firstItem)
-        {
-            itemShow.SetActive(true);
-            itemName.text = string.Empty;
-            itemDescribe.text = string.Empty;
-            itemCooltime.fillAmount = 0f;
-            firstItem = true;
-        }
-        else if(firstItem)
-        {
-            itemShow.SetActive(true);
-            itemName.text = string.Empty;
-            itemDescribe.text = string.Empty;
-            itemCooltime.fillAmount = 0f;
-            secondItem = true;
-        }
-    }
     private void OnDestroy()
     {
         goToMain.onClick.RemoveAllListeners();
