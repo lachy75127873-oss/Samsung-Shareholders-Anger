@@ -62,7 +62,7 @@ public class StartMenuScene : MonoBehaviour
     /// 게임 시작버튼을 누르면 게임씬으로 이동함.
     /// </summary>
     void StartGame()
-    { SceneManager.LoadSceneAsync(gameSceneName); }
+    { LoadingScene.LoadScene(gameSceneName); }
     /// <summary>
     /// 옵션 버튼을 누르면 옵션창이 뜸.
     /// </summary>

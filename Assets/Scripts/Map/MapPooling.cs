@@ -4,17 +4,27 @@ using UnityEngine;
 public class MapPooling : MonoBehaviour
 {
     [SerializeField]
-    private GameObject[] mapPrefabs; // 프리팹 받아오기
-    private List<GameObject> mapPool = new List<GameObject>(); // 풀 만들기
+    private GameObject[] easyMaps;
+    [SerializeField]
+    private GameObject[] normalMaps;
+    [SerializeField]
+    private GameObject[] hardMaps;
+   
+    private List<GameObject> easyMappool = new List<GameObject>();
+    private List<GameObject> normalMappool = new List<GameObject>();
+    private List<GameObject> hardMappool = new List<GameObject>();
+
+
+    List<GameObject> RandMap = new List<GameObject>();
+
     private float spawnPos = 0f;
     private Transform player;
     private List<GameObject> currentMap = new List<GameObject>();
-    private int mapCount = 0;
     void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player").transform; // 플레이어 위치받아오기
         InitPool();
         ActivateRandomMap();
-        player = GameObject.FindGameObjectWithTag("Player").transform; // 플레이어 위치받아오기
     }
     private void Update()
     {
@@ -25,20 +35,41 @@ public class MapPooling : MonoBehaviour
     }
     private void InitPool() // 프리팹 받아온걸 생성 후 비활성화, 풀에 넣기
     {
-        for (int i = 0; i < mapPrefabs.Length; i++) // 받아온 프리팹 길이만큼 반복
+        for (int i = 0; i < easyMaps.Length; i++) // 받아온 프리팹 길이만큼 반복
         {
-            GameObject obj = Instantiate(mapPrefabs[i], transform); // 자식으로 프리팹들 생성후
-            obj.SetActive(false); // 비활성화
-            mapPool.Add(obj); // 풀에 넣기
+            for(int j = 0; j < 2; j++)
+            {
+                GameObject obj = Instantiate(easyMaps[i], transform); // 자식으로 프리팹들 생성후
+                obj.SetActive(false); // 비활성화
+                easyMappool.Add(obj); // 풀에 넣기
+            }
+        }
+        for (int i = 0; i < normalMaps.Length; i++)
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                GameObject obj = Instantiate(normalMaps[i], transform);
+                obj.SetActive(false);
+                normalMappool.Add(obj);
+            }
+        }
+        for (int i = 0; i < hardMaps.Length; i++)
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                GameObject obj = Instantiate(hardMaps[i], transform);
+                obj.SetActive(false);
+                hardMappool.Add(obj);
+            }
         }
     }
     void ActivateRandomMap() // 프리팹 활성화
     {
-        GameObject map = GetInactiveMap(); // map = GetInactiveMap()에서 반환된 랜덤으로 뽑은 맵을 담는다
-        if (currentMap != null&&mapCount >= 3) // 3번째 생성할때
+        GameObject map = GetRandomeMap(); // map = GetInactiveMap()에서 반환된 랜덤으로 뽑은 맵을 담는다
+        if (currentMap.Count >= 3) // 3번째 생성할때
         {
             currentMap[0].SetActive(false); // 첫번째 생성된 맵 비활성화
-            currentMap.Remove(currentMap[0]); // 리스트에서 삭제하여 다음맵 0번으로 조정
+            currentMap.RemoveAt(0); // 리스트에서 삭제하여 다음맵 0번으로 조정
         }
         if (map != null) // map이 null이 아니라면
         {
@@ -46,26 +77,67 @@ public class MapPooling : MonoBehaviour
             map.SetActive(true); // 그 맵을 활성화 시켜준다
             currentMap.Add(map);
             spawnPos += 120f; // 다음 맵 위치를 조정하기위해 프리팹(맵)의 전체길이를 추가하여 뒤에 이어붙힌다
-            mapCount++;
         }
     }
 
-    GameObject GetInactiveMap() // 랜덤으로 뽑기
+    GameObject GetRandomeMap() // 랜덤으로 뽑기
     {
-        List<GameObject> inactiveMaps = new List<GameObject>();
 
-        foreach (GameObject obj in mapPool) // mapPool길이 만큼 돌면서
+        int level = Mathf.FloorToInt(player.transform.position.z / 500f);
+        level = Mathf.Clamp(level, 1, 5);
+
+        switch (level)
         {
-            if (!obj.activeInHierarchy) // 비활성화 된것들을
-                inactiveMaps.Add(obj); // 리스트에 담는다
+            case 1:
+                SetEasyMap();
+                break;
+            case 2:
+                SetEasyMap();
+                SetNormalMap();
+                break;
+            case 3:
+                SetNormalMap();
+                break;
+            case 4:
+                SetNormalMap();
+                SetHardMap();
+                break;
+            case 5:
+                SetHardMap();
+                break;
         }
-
-        if (inactiveMaps.Count > 0) // 만약 비활성화 된것이 1개라도 있을때
+        if (RandMap.Count > 0) // 만약 비활성화 된것이 1개라도 있을때
         {
-            int rand = Random.Range(0, inactiveMaps.Count); // 비활성화 된 오브젝트를 담은 리스트의 길이값 사이 중 하나를 뽑아
-            return inactiveMaps[rand]; // 반환시킨다
+            int rand = Random.Range(0, RandMap.Count); // 비활성화 된 오브젝트를 담은 리스트의 길이값 사이 중 하나를 뽑아
+            return RandMap[rand]; // 반환시킨다
         }
 
         return null; // 모든것이 활성화 되어있다면 null을 반환한다
+    }
+
+
+    private void SetEasyMap()
+    {
+        foreach (GameObject obj in easyMappool) // mapPool길이 만큼 돌면서
+        {
+            if (!obj.activeInHierarchy) // 비활성화 된것들을
+                RandMap.Add(obj); // 리스트에 담는다
+        }
+    }
+    private void SetNormalMap()
+    {
+        foreach (GameObject obj in normalMappool) // mapPool길이 만큼 돌면서
+        {
+            if (!obj.activeInHierarchy) // 비활성화 된것들을
+                RandMap.Add(obj); // 리스트에 담는다
+        }
+    }
+    private void SetHardMap()
+    {
+        foreach (GameObject obj in hardMappool) // mapPool길이 만큼 돌면서
+        {
+            if (!obj.activeInHierarchy) // 비활성화 된것들을
+                RandMap.Add(obj); // 리스트에 담는다
+        }
     }
 }
