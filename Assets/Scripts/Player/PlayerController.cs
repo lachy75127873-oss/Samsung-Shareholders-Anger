@@ -121,6 +121,11 @@ public class PlayerController : MonoBehaviour
     }
 #endif
 
+    private void Awake()
+    {
+        ManagerRoot.gameManager.RegisterPlayer(this);
+    }
+
     private void Start()
     {
         targetMovePos = rb.position;
@@ -467,12 +472,19 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.gameObject.layer);
         if (other.gameObject.layer == 7)
         {
             isDead = true;
             StopRun = true;
             animator.SetBool("isDead", true);
             OnPlayerDead?.Invoke();
+        }
+
+        if(other.CompareTag("ScoreCheck"))
+        {
+            ManagerRoot.scoreManager.combo += 1;
+            Debug.LogWarning(ManagerRoot.scoreManager.combo);
         }
     }
 
