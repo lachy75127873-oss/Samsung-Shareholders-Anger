@@ -102,6 +102,7 @@ public class GameSceneUI : MonoBehaviour
         currentScore.text = 0f.ToString();
         alarmShow.SetActive(false);
         itemShow.SetActive(false);
+        previousScore = 0;//이전 회차의 점수를 넣어야 함
     }
     /// <summary>
     /// score에 넣은 값이 현재 주가로 표시됨.
@@ -110,17 +111,32 @@ public class GameSceneUI : MonoBehaviour
     internal void InputScore(float score)//점수가 어디있는지 물어서 세팅해야 됨.
     {
         currentScore.text = score.ToString("N2");
-        if (score == startPercent)
-        {previousScore = score;}
-        float percent = ((score - previousScore) / previousScore) * 100;
-        if (percent % showAlarm == 0)
+        if (previousScore > 0)
         {
-            alarmShow.SetActive(true);
-            alarmAnimator.SetBool("isActive", true);
-            newsTitle.text = $"지금 삼성전자 가격이 {percent:N2}% 상승했어요";
-            newsDescribe.text = $"금일 장 중 최고가를 기록했어요. ({score:N2}원)";
-            CancelInvoke("AlarmOff");
-            Invoke("AlarmOff", 10);
+            float percent = ((score - previousScore) / previousScore) * 100;
+            if (percent % showAlarm == 0)
+            {
+                alarmShow.SetActive(true);
+                alarmAnimator.SetBool("isActive", true);
+                newsTitle.text = $"지금 삼성전자 가격이 {percent:N2}% 상승했어요";
+                newsDescribe.text = $"금일 장 중 최고가를 기록했어요. ({score:N2}원)";
+                CancelInvoke("AlarmOff");
+                Invoke("AlarmOff", 10);
+            }
+        }
+        else
+        {
+            float percent = ((score - startPercent) / startPercent) * 100;
+            if (percent % showAlarm == 0)
+            {
+                alarmShow.SetActive(true);
+                alarmAnimator.SetBool("isActive", true);
+                newsTitle.text = $"정규장 개시! 시초가 ({score:N2}원) 형성";
+                newsDescribe.text = $"금일 장 중 최고가를 기록했어요. ({score:N2}원)";
+                previousScore = score;
+                CancelInvoke("AlarmOff");
+                Invoke("AlarmOff", 10);
+            }
         }
     }
     /// <summary>
