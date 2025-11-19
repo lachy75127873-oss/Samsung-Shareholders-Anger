@@ -55,7 +55,8 @@ public class GameManager
 
         if (ManagerRoot.itemEffectManager != null)
         {
-            
+            ManagerRoot.itemEffectManager.SaveOriginalStats(player.jumpPower, player.MaxHeight);
+            Debug.Log("플레이어 원본 스탯 저장 완료");
         }
     }
 
@@ -67,9 +68,8 @@ public class GameManager
 
     private void ResetPlayerData()
     {
-        
+        ManagerRoot.itemEffectManager.Reset();
+        //ManagerRoot.socreManager.Reset();
     }
-    
-
 }
 
