@@ -11,7 +11,7 @@ public class ManagerRoot : Singleton<ManagerRoot>
     public static ItemEffectManager itemEffectManager;
 
     [SerializeField] private SceneController sceneController;
-    [SerializeField] public AudioManager audioManager;
+    public AudioManager audioManager;
 
     protected override void Init() // 매니저들의 초기화 호출 순서 조절
     {
