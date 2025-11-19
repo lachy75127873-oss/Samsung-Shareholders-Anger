@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StartMenuScene : MonoBehaviour
@@ -45,11 +46,6 @@ public class StartMenuScene : MonoBehaviour
     /// </summary>
     [Tooltip("전판 점수 대비 퍼센트")]
     [SerializeField] Text percentScore;
-    /// <summary>
-    /// 로딩씬 스크립트 넣는 곳
-    /// </summary>
-    [SerializeField]
-    LoadingScene loadingScene;//싱글턴으로 로딩씬 처리해야 됨
     private void Awake()
     {
         lastScore.text = 0.ToString();
@@ -60,7 +56,7 @@ public class StartMenuScene : MonoBehaviour
         optionExitButton.onClick.AddListener(ExitOption);
     }
     void StartGame()
-    { loadingScene.LoadScene(gameSceneName); }
+    { SceneManager.LoadSceneAsync(gameSceneName); }
     void TurnOption()
     { optionUI.SetActive(true); }
     void ExitOption()
