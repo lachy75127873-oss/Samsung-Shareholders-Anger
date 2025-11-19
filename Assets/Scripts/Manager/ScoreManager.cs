@@ -38,7 +38,6 @@ public class ScoreManager
         int calcBonus = (bonusScore * combo);
         score = sc;
         totalScore =score + calcBonus;
-        Debug.Log("calcBonus" + calcBonus);
     }
 
     public void SetBestScore()
@@ -47,13 +46,11 @@ public class ScoreManager
         if (!PlayerPrefs.HasKey("BestScore"))
         {
             PlayerPrefs.SetInt("BestScore", totalScore);
-            Debug.Log("Bestsco 처음 저장"+totalScore);
         }
         else  if(totalScore > bestScore)
         {
             bestScore =totalScore;
             PlayerPrefs.SetInt("BestScore", totalScore);
-            Debug.Log("Bestscor 저장"+bestScore);
         }
     }
     
@@ -64,6 +61,4 @@ public class ScoreManager
         bonusScore = 0;
         combo = 0;
     }
-    
-    
 }

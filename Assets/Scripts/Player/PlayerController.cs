@@ -173,6 +173,11 @@ public class PlayerController : MonoBehaviour
             OnPlayerDead?.Invoke();
             animator.SetBool("isDead", true);
         }
+
+        else if (Input.GetKeyDown(KeyCode.I))
+        {
+            ManagerRoot.itemEffectManager?.DebugLogStatus();
+        }
 #endif
     }
 
@@ -230,6 +235,12 @@ public class PlayerController : MonoBehaviour
         currentVelocity = rb.velocity;
         currentPos = rb.position;
 #endif
+    }
+
+    private void OnDestroy()
+    {
+        // GameManager에서 해제
+        ManagerRoot.gameManager?.UnregisterPlayer();
     }
     #endregion
 
@@ -495,15 +506,32 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Item
-    public void EnableMagnetRange()
+    public void ApplyItemEffect(ItemData itemData)
     {
-        itemRootRange.ApplyMagnetRange();
+        ManagerRoot.itemEffectManager?.ApplyItem(itemData);
+    }
+
+    public void SetJumpPower(float value)
+    {
+        jumpPower = value;
+        Debug.Log($"[Item] 점프력 변경: {value}");
+    }
+
+    public void SetMaxHeight(float value)
+    {
+        MaxHeight = value;
+        Debug.Log($"[Item] 최대 높이 변경: {value}");
+    }
+
+    public void EnableMagnetRange(float range)
+    {
+        itemRootRange?.ApplyMagnetRange(range);
     }
 
     public void DisableMagnetRange()
     {
-        itemRootRange.ApplyDefaultRange();
+        itemRootRange?.ApplyDefaultRange();
     }
-
     #endregion
+
 }
