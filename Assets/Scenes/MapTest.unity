@@ -450,17 +450,22 @@ PrefabInstance:
     - target: {fileID: 6279917382366845060, guid: 085e694d24ed18943911e58d51023362,
         type: 3}
       propertyPath: runSpeed
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6279917382366845060, guid: 085e694d24ed18943911e58d51023362,
         type: 3}
       propertyPath: MaxHeight
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6279917382366845060, guid: 085e694d24ed18943911e58d51023362,
         type: 3}
       propertyPath: jumpPower
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6279917382366845060, guid: 085e694d24ed18943911e58d51023362,
+        type: 3}
+      propertyPath: airborneTime
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6279917382366845060, guid: 085e694d24ed18943911e58d51023362,
         type: 3}
@@ -481,7 +486,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 13400000, guid: 5816fa20f550ad3418409e8f080dc1d4,
+      objectReference: {fileID: 13400000, guid: 2c15889b238668741beee2a1127d1df9,
         type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
