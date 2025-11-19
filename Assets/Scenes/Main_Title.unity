@@ -376,7 +376,9 @@ PrefabInstance:
       propertyPath: m_UseGravity
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6960378645065873379, guid: bed8090258440424ba02d3952e5ce215, type: 3}
+    - {fileID: 4752485018540826699, guid: bed8090258440424ba02d3952e5ce215, type: 3}
     m_RemovedGameObjects:
     - {fileID: 5056773519258805644, guid: bed8090258440424ba02d3952e5ce215, type: 3}
     m_AddedGameObjects: []

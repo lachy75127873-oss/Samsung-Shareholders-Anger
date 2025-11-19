@@ -54,9 +54,9 @@ public class GameManager : MonoBehaviour
         player.OnPlayerDead += GameOver;
         Debug.Log("player초기화" + player);
 
-        if (ManagerRoot.itemEffectManager != null)
+        if (ManagerRoot.Instance.itemEffectManager != null)
         {
-            ManagerRoot.itemEffectManager.SaveOriginalStats(player.jumpPower, player.MaxHeight);
+            ManagerRoot.Instance.itemEffectManager.SaveOriginalStats(player.jumpPower, player.MaxHeight);
             Debug.Log("플레이어 원본 스탯 저장 완료");
         }
     }
@@ -69,8 +69,8 @@ public class GameManager : MonoBehaviour
 
     private void ResetPlayerData()
     {
-        ManagerRoot.itemEffectManager.Reset();
-        ManagerRoot.scoreManager.Reset();
+        ManagerRoot.Instance.itemEffectManager.Reset();
+        ManagerRoot.Instance.scoreManager.Reset();
     }
 }
 

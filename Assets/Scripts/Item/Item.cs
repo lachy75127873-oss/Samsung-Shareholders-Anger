@@ -23,7 +23,7 @@ public class Item : MonoBehaviour
 
     private void Start()
     {
-        itemData = ManagerRoot.dataManager.GetItemData(itemID);
+        itemData = ManagerRoot.Instance.dataManager.GetItemData(itemID);
     }
     #endregion
 
