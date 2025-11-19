@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager
+public class GameManager : MonoBehaviour
 {
     private bool isDead;
     public bool IsDead { get { return isDead; } set { isDead = value; } }
