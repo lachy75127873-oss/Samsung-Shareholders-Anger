@@ -525,7 +525,10 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.layer == 7)
         {
             StopRun = true;
-            animator.SetBool(nameof(PlayerAnimationParameter.isSpin), true);
+            if (lastSideInput != null)
+            {
+                animator.SetBool(nameof(PlayerAnimationParameter.isSpin), true);
+            }
             isDead = true;
             animator.SetBool(nameof(PlayerAnimationParameter.isDead), true);
         }
