@@ -17,8 +17,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Range(0, 100)][Tooltip("좌우 이동 간격")] float sideMoveDistance;
 
     [Header("Jump")]
-    [SerializeField][Range(1, 1000)][Tooltip("점프 파워")] float jumpPower;
-    [SerializeField][Range(1, 100)][Tooltip("점프 높이")] float MaxHeight;
+    [Range(1, 1000)][Tooltip("점프 파워")] public float jumpPower;
+    [Range(1, 100)][Tooltip("점프 높이")] public float MaxHeight;
     [SerializeField][Range(0, 10)][Tooltip("공중에 머무는 시간")] float airborneTime;
 
     [Header("Fall")]

@@ -5,7 +5,7 @@
 			"itemName": "Gold Coin",
 			"description": "기본 코인",
 			"itemType": "Coin",
-			"value": 1,
+			"value": [ 1 ],
 			"duration": 0
 		},
 		{
@@ -13,7 +13,7 @@
 			"itemName": "Super Boots",
 			"description": "5초간 점프 높이 증가",
 			"itemType": "JumpUp",
-			"value": 2,
+			"value": [ 2, 3 ],
 			"duration": 10.0
 		},
 		{
@@ -21,7 +21,7 @@
 			"itemName": "Magnet",
 			"description": "5초간 일정 범위 아이템 자동 획득",
 			"itemType": "Magnet",
-			"value": 3,
+			"value": [ 3 ],
 			"duration": 15.0
 		}
 	]
