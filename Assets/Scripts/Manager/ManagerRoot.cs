@@ -4,20 +4,19 @@ using UnityEngine.UI;
 
 public class ManagerRoot : Singleton<ManagerRoot>
 {
-    public static GameManager gameManager;
     public static ScoreManager scoreManager;
     public static ResourceManager resourceManager;
     public static DataManager dataManager;
     public static ItemEffectManager itemEffectManager;
 
-    [SerializeField] private SceneController sceneController;
+    public  SceneController sceneController;
     public AudioManager audioManager;
+    [SerializeField] private GameManager gameManager;
 
     protected override void Init() // 매니저들의 초기화 호출 순서 조절
     {
         Debug.Log("ManagerRoot 초기화 시작");
 
-        gameManager = new GameManager();
         scoreManager = new ScoreManager();
         resourceManager = new ResourceManager();
         dataManager = new DataManager("Data/Item", "Items");
