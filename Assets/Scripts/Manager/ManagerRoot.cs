@@ -31,8 +31,17 @@ public class ManagerRoot : Singleton<ManagerRoot>
         Debug.Log("ManagerRoot 초기화 완료");
     }
 
+    private void Update()
+    {
+        scoreManager?.Update();
+    }
+
     private void OnDestroy()
     {
         dataManager?.Release();
     }
+    
+    
+    
+    
 }
