@@ -20,7 +20,7 @@ public class ManagerRoot : Singleton<ManagerRoot>
         scoreManager = new ScoreManager();
         resourceManager = new ResourceManager();
         dataManager = new DataManager("Data/Item", "Items");
-        itemEffectManager = new ItemEffectManager();
+        itemEffectManager = new ItemEffectManager(null);
 
         gameManager?.Init();
         dataManager?.Init();

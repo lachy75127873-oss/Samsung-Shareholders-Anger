@@ -11,9 +11,24 @@ public class ScoreManager
     }
     
     //MainTitle 이전 LoadingScene
-    public void ReadyMain()
+    private void ReadyMain()
     {
         Debug.Log("ScoreManage - 최고점수 로드");
+    }
+
+    private void ShowBestScore()
+    {
+        
+    }
+    
+    private void ResetScore()
+    {
+        
+    }
+
+    private void ReneewScore()
+    {
+        //플레이어 
     }
 
 
