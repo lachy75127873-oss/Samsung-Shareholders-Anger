@@ -60,6 +60,24 @@ public class StartMenuScene : MonoBehaviour
         optionExitButton.onClick.AddListener(UiManager.instance.ExitOption);
     }
 
+    /// <summary>
+    /// 게임 시작버튼을 누르면 게임씬으로 이동함.
+    /// </summary>
+    void StartGame()
+    {
+        ManagerRoot.Instance.sceneController.OnLoadingScene(ScreenState.Main_Game);
+    }
+    /// <summary>
+    /// 옵션 버튼을 누르면 옵션창이 뜸.
+    /// </summary>
+    void TurnOption()
+    { optionUI.SetActive(true); }
+    /// <summary>
+    /// 옵션창에서 나가기 누르면 옵션창이 꺼짐.
+    /// </summary>
+    void ExitOption()
+    { optionUI.SetActive(false); }
+
     private void OnDestroy()
     {
         startButton.onClick.RemoveAllListeners();
