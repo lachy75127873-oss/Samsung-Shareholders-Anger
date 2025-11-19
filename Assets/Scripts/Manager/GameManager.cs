@@ -35,9 +35,7 @@ public class GameManager
     {
         //플레이어 사망 판정 
         isDead = true;
-        //ScoreManager에서 점수 갱신하고
-        // UIManager에서 플레이어 사망 UI띄우고
-        //그 다음 홈으로 또는 종료 버튼 누를 시 LoadingScene로드하게
+        ManagerRoot.scoreManager.SetBestScore();
     }
     
     
@@ -52,6 +50,7 @@ public class GameManager
             ResetPlayerData(); //추후
         }
         player = _player;
+        Debug.Log("player초기화"+player);
 
         if (ManagerRoot.itemEffectManager != null)
         {
@@ -69,7 +68,7 @@ public class GameManager
     private void ResetPlayerData()
     {
         ManagerRoot.itemEffectManager.Reset();
-        //ManagerRoot.socreManager.Reset();
+        ManagerRoot.scoreManager.Reset();
     }
 }
 
