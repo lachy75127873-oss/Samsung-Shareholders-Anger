@@ -73,4 +73,11 @@ public class StartMenuScene : MonoBehaviour
     /// </summary>
     void ExitOption()
     { optionUI.SetActive(false); }
+
+    private void OnDestroy()
+    {
+        startButton.onClick.RemoveAllListeners();
+        optionButton.onClick.RemoveAllListeners();
+        optionExitButton.onClick.RemoveAllListeners();
+    }
 }
