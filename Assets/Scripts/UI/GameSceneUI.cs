@@ -151,11 +151,11 @@ public class GameSceneUI : MonoBehaviour
         }
         if (EndPercent != null)
         {
-            float floCurScore = currentScore;
-            float floBestScore = bestScore;
-            float floPercent = currentScore / bestScore;
-            byte roundPercent = (byte)Mathf.Round(floPercent * 100);
-            if (roundPercent <= 0)
+            Debug.Log(currentScore);
+            Debug.Log(bestScore);
+            float floPercent = (float)currentScore / bestScore;
+            Debug.Log(floPercent);
+            if (floPercent <= 0)
             {
                 endIcon.sprite = lowerIcon;
                 EndPercent.color = Color.red;
@@ -165,29 +165,29 @@ public class GameSceneUI : MonoBehaviour
                 endIcon.sprite = higherIcon;
                 EndPercent.color = Color.green;
             }
-            EndPercent.text = $"{roundPercent.ToString("N0")}%";
-            if (roundPercent < 50)
+            EndPercent.text = $"{(floPercent*100).ToString("N0")}%";
+            if (floPercent < 0.5)
             {
                 EndNews1.SetActive(true);
                 EndNews2.SetActive(false);
                 EndNews3.SetActive(false);
                 EndNews4.SetActive(false);
             }
-            else if (roundPercent > 50 && roundPercent < 80)
+            else if (floPercent > 0.5 && floPercent < 0.8)
             {
                 EndNews1.SetActive(false);
                 EndNews2.SetActive(true);
                 EndNews3.SetActive(false);
                 EndNews4.SetActive(false);
             }
-            else if (roundPercent > 80 && roundPercent < 100)
+            else if (floPercent > 0.8 && floPercent < 1)
             {
                 EndNews1.SetActive(false);
                 EndNews2.SetActive(false);
                 EndNews3.SetActive(true);
                 EndNews4.SetActive(false);
             }
-            else if (roundPercent < 100)
+            else if (floPercent > 1)
             {
                 EndNews1.SetActive(false);
                 EndNews2.SetActive(false);

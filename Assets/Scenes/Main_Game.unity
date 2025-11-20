@@ -991,6 +991,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 108592227355838311, guid: 64ceb8927f378b642a975d5fbc511a1b,
+        type: 3}
+      propertyPath: EndPercent
+      value: 
+      objectReference: {fileID: 5748336885095095419}
     - target: {fileID: 643564622080529415, guid: 64ceb8927f378b642a975d5fbc511a1b,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1126,6 +1131,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 64ceb8927f378b642a975d5fbc511a1b, type: 3}
+--- !u!114 &5748336885095095419 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8918952285253333811, guid: 64ceb8927f378b642a975d5fbc511a1b,
+    type: 3}
+  m_PrefabInstance: {fileID: 5748336885095095418}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
