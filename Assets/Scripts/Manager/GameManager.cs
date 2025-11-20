@@ -48,7 +48,6 @@ public class GameManager : MonoBehaviour
             UiManager.Instance.EndGame();
         }
         ManagerRoot.Instance.scoreManager.Clear();
-
     }
 
 
@@ -76,7 +75,6 @@ public class GameManager : MonoBehaviour
     public void UnregisterPlayer()
     {
         player = null;
-        isDead = false;
         ResetPlayerData();
     }
 
@@ -84,6 +82,7 @@ public class GameManager : MonoBehaviour
     {
         ManagerRoot.Instance.itemEffectManager.Reset();
         ManagerRoot.Instance.scoreManager.Clear();
+        isDead = false; 
     }
 }
 

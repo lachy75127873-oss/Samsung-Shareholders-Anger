@@ -59,6 +59,7 @@ public class StartMenuScene : MonoBehaviour
         highestScore.text = ManagerRoot.Instance.scoreManager.bestScore.ToString();
         float percent = UiManager.Instance.lastDayPercent;
         percentScore.text = $"{(percent*100).ToString("N0")}%";//임시임. 스코어 매니저랑 상의해야 됨.
+
         if (percent <= 0.5)
         {
             arrowIcon.sprite = lowerArrow;

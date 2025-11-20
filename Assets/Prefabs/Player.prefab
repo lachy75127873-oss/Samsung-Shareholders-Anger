@@ -2007,7 +2007,7 @@ MonoBehaviour:
   rb: {fileID: 3220018429599094685}
   runSpeed: 4
   maxSpeedBonus: 12
-  speedIncreaseRate: 0.003
+  speedIncreaseRate: 0.006
   currentRail: 0
   sideMoveSpeed: 15
   sideMoveDistance: 2.5

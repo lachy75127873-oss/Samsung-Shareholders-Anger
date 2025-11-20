@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 4875460945159334480}
   - component: {fileID: 513994115220872469}
   - component: {fileID: 3636899957129853923}
+  - component: {fileID: 6206675945105788645}
   m_Layer: 0
   m_Name: AscentObstacle
   m_TagString: Untagged
@@ -218,3 +219,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c052aee37ffb844298c01b591d79050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &6206675945105788645
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8421736093958125344}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5.5, y: 0.5195382, z: 13.470121}
+  m_Center: {x: 2.75, y: 3.0402513, z: 13.830328}
