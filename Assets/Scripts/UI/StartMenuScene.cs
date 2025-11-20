@@ -51,8 +51,8 @@ public class StartMenuScene : MonoBehaviour
     private void Start()
     {
         UiManager.Instance.InputStartMenu(this);
-        lastScore.text = 0.ToString();
-        highestScore.text = 0.ToString();
+        lastScore.text = ManagerRoot.Instance.scoreManager.GetLastScore().ToString();
+        highestScore.text = ManagerRoot.Instance.scoreManager.bestScore.ToString();
         percentScore.text = $"{0.ToString()}%";//임시임. 스코어 매니저랑 상의해야 됨.
         startButton.onClick.AddListener(UiManager.Instance.StartGame);
         optionButton.onClick.AddListener(UiManager.Instance.TurnOption);

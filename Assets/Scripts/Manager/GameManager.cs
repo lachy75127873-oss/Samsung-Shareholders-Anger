@@ -7,13 +7,8 @@ public class GameManager : MonoBehaviour
 {
     private bool isDead;
     public bool IsDead { get { return isDead; } set { isDead = value; } }
-    
 
     public PlayerController player;
-    //골드
-    public int gold;
-    //게임오버
-
 
     //게임 매니저 초기화 로직
     public void Init()
@@ -45,6 +40,7 @@ public class GameManager : MonoBehaviour
 
         // 최고 점수 저장
         ManagerRoot.Instance.scoreManager.SetBestScore();
+        ManagerRoot.Instance.scoreManager.lastScore = ManagerRoot.Instance.scoreManager.totalScore;
 
         // UI 표시
         if (UiManager.Instance != null)

@@ -5,7 +5,7 @@
 			"itemName": "Gold Coin",
 			"description": "기본 코인",
 			"itemType": "Coin",
-			"value": [ 1 ],
+			"value": [ 500 ],
 			"duration": 0
 		},
 		{

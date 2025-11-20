@@ -17,7 +17,6 @@ public class SceneController : MonoBehaviour
 {
     private ScreenState targetState; //다음 상태 지정용 enum
     
-    private Coroutine coroutine; // 로딩씬용 코루틴
     [SerializeField] private float loadingTime = 1.5f;
     
     //씬컨트롤러 초기화 로직
