@@ -47,6 +47,8 @@ public class GameManager : MonoBehaviour
         {
             UiManager.Instance.EndGame();
         }
+        ManagerRoot.Instance.scoreManager.Clear();
+
     }
 
 
