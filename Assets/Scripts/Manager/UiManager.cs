@@ -30,11 +30,11 @@ public class UiManager : MonoBehaviour
     }
 
     private void Init()
-    {}
+    { }
     StartMenuScene startMenuScene;
     LoadingScene loadingScene;
     GameSceneUI gameSceneUI;
- 
+
     internal void InputStartMenu(StartMenuScene start)
     { startMenuScene = start; }
     internal void InputloadingScene(LoadingScene load)
@@ -86,7 +86,6 @@ public class UiManager : MonoBehaviour
 
         if (loadingScene == null)
         {
-            Debug.LogError("[UiManager] loadingScene이 2초 내에 등록되지 않았습니다!");
             // loadingBar 없이 씬만 로드
             op = SceneManager.LoadSceneAsync(LoadingScene.nextScene);
             yield return op;
@@ -95,7 +94,6 @@ public class UiManager : MonoBehaviour
 
         if (loadingScene.loadingBar == null)
         {
-            Debug.LogError("[UiManager] loadingBar가 null입니다!");
             // loadingBar 없이 씬만 로드
             op = SceneManager.LoadSceneAsync(LoadingScene.nextScene);
             yield return op;
@@ -135,33 +133,12 @@ public class UiManager : MonoBehaviour
     /// <param name="score"></param>
     internal void InputScore(float score)//점수가 어디있는지 물어서 세팅해야 됨.
     {
-        gameSceneUI.currentScore.text = score.ToString("N2");
-        if (gameSceneUI.previousScore > 0)
+        if (gameSceneUI == null) return;
+
+        // 점수 업데이트
+        if (gameSceneUI.currentScore != null)
         {
-            float percent = ((score - gameSceneUI.previousScore) / gameSceneUI.previousScore) * 100;
-            if (percent % gameSceneUI.showAlarm == 0)
-            {
-                gameSceneUI.alarmShow.SetActive(true);
-                gameSceneUI.alarmAnimator.SetBool("isActive", true);
-                gameSceneUI.newsTitle.text = $"지금 삼성전자 가격이 {percent:N2}% 상승했어요";
-                gameSceneUI.newsDescribe.text = $"금일 장 중 최고가를 기록했어요. ({score:N2}원)";
-                CancelInvoke("AlarmOff");
-                Invoke("AlarmOff", 10);
-            }
-        }
-        else
-        {
-            float percent = ((score - GameSceneUI.startPercent) / GameSceneUI.startPercent) * 100;
-            if (percent % gameSceneUI.showAlarm == 0)
-            {
-                gameSceneUI.alarmShow.SetActive(true);
-                gameSceneUI.alarmAnimator.SetBool("isActive", true);
-                gameSceneUI.newsTitle.text = $"정규장 개시! 시초가 ({score:N2}원) 형성";
-                gameSceneUI.newsDescribe.text = $"금일 장 중 최고가를 기록했어요. ({score:N2}원)";
-                gameSceneUI.previousScore = score;
-                CancelInvoke("AlarmOff");
-                Invoke("AlarmOff", 10);
-            }
+            gameSceneUI.currentScore.text = score.ToString("N0");
         }
     }
     /// <summary>
@@ -185,9 +162,17 @@ public class UiManager : MonoBehaviour
     /// </summary>
     public void EndGame()
     {
-        gameSceneUI.currentEndScore.text = 0.ToString();
-        gameSceneUI.highestEndScore.text = 0.ToString();//점수넣는 자리
-        gameSceneUI.endUI.SetActive(true);
+        // ScoreManager에서 점수 가져오기
+        int currentScore = ManagerRoot.Instance.scoreManager.GetTotalScore();
+        int bestScore = ManagerRoot.Instance.scoreManager.bestScore;
+
+        Debug.Log($"게임 오버 - 현재: {currentScore}, 최고: {bestScore}");
+
+        // GameSceneUI에 점수 표시
+        gameSceneUI.ShowGameOver(currentScore, bestScore);
+
+        // 최고 점수 저장
+        ManagerRoot.Instance.scoreManager.SetBestScore();
     }
     /// <summary>
     /// 매뉴로 가는 키
@@ -215,4 +200,12 @@ public class UiManager : MonoBehaviour
         }
     }
 
+    public void QuitGame()
+    {
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
+    }
 }
