@@ -423,7 +423,7 @@ public class PlayerController : MonoBehaviour
         if (airborneTimer >= airborneTime)
         {
             isAirborne = false;
-            rb.useGravity = true;
+            //rb.useGravity = true;
             airborneTimer = default;
             rb.velocity = new(rb.velocity.x, velocityY, rb.velocity.z);
         }
@@ -434,7 +434,7 @@ public class PlayerController : MonoBehaviour
         rb.position = new(rb.position.x, beforeJumpPos.y + MaxHeight, rb.position.z);
 
         isAirborne = true;
-        rb.useGravity = false;
+        //rb.useGravity = false;
     }
     bool IsMaxHeight()
     {
