@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public enum PlayerAnimationParameter
 {
@@ -16,11 +17,15 @@ public class PlayerController : MonoBehaviour
 {
     #region SerializeFields
     [Header("Animator")]
-    [SerializeField] Animator animator;
+    public Animator animator;
 
     [Header("Movement")]
     [SerializeField] Rigidbody rb;
     [SerializeField][Range(0, 1000)][Tooltip("달리기 속도")] float runSpeed;
+    [SerializeField][Range(0, 15)][Tooltip("최대 속도 증가량")] float maxSpeedBonus = 12f;
+    [SerializeField][Range(0, 0.01f)][Tooltip("속도 증가 배율")] float speedIncreaseRate = 0.005f;
+    private float baseSpeed; // 원본 속도 저장
+    private float startPositionZ; // 시작 지점
 
     [Header("Side")]
     [SerializeField][Range(-1, 1)][Tooltip("현재 위치한 레일")] int currentRail;
@@ -152,14 +157,26 @@ public class PlayerController : MonoBehaviour
 
     private void OnDisable()
     {
-        animator.GetBehaviours<PlayerDeadAnimationEndHandler>()
-            .FirstOrDefault(x => x.index == 0)
-            .OnPlayerDeadAnimationStarted -= PlayerController_OnPlayerDeadAnimationStarted;
+        if (animator == null)
+            return;
+
+        var handle = animator.GetBehaviours<PlayerDeadAnimationEndHandler>().FirstOrDefault(x => x.index == 0);
+
+        if(handle!=null)
+        {
+            handle.OnPlayerDeadAnimationStarted -= PlayerController_OnPlayerDeadAnimationStarted;
+        }
     }
 
     private void Start()
     {
         targetMovePos = rb.position;
+
+        // 원본 속도 저장
+        baseSpeed = runSpeed;
+
+        // 시작 지점 저장
+        startPositionZ = rb.position.z;
     }
 
     private void Update()
@@ -261,7 +278,12 @@ public class PlayerController : MonoBehaviour
 
         /*앞으로 전진*/
         if (!StopRun)
+        {
+            UpdateRunSpeed();
+
+            // 계산된 속도로 이동
             rb.MovePosition(rb.position + runSpeed * Time.fixedDeltaTime * Vector3.forward);
+        }
 
 #if UNITY_EDITOR
         currentVelocity = rb.velocity;
@@ -531,6 +553,7 @@ public class PlayerController : MonoBehaviour
             }
             isDead = true;
             animator.SetBool(nameof(PlayerAnimationParameter.isDead), true);
+            ManagerRoot.gameManager.GameOver();
         }
 
         if(other.CompareTag("ScoreCheck"))
@@ -577,8 +600,38 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Dead
-    private void PlayerController_OnPlayerDeadAnimationStarted()
+    public void PlayerController_OnPlayerDeadAnimationStarted()
         => OnPlayerDead?.Invoke();
-    
+
     #endregion
+
+    #region Speed Control
+    // <summary>
+    /// runSpeed 업데이트 (거리에 따라 증가)
+    /// </summary>
+    private void UpdateRunSpeed()
+    {
+        // 이동한 거리
+        float distanceTraveled = rb.position.z - startPositionZ;
+
+        // 속도 증가량 계산
+        float speedBonus = distanceTraveled * speedIncreaseRate;
+
+        // 최대값 제한
+        speedBonus = Mathf.Min(speedBonus, maxSpeedBonus);
+
+        // runSpeed 업데이트
+        runSpeed = baseSpeed + speedBonus;
+    }
+
+    /// <summary>
+    /// 속도 리셋
+    /// </summary>
+    public void ResetSpeed()
+    {
+        startPositionZ = rb.position.z;
+        runSpeed = baseSpeed;
+    }
+    #endregion
+
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
         //플레이어 사망 판정 
         isDead = true;
         UiManager.Instance.EndGame();
+        player.animator.GetBehaviours<PlayerDeadAnimationEndHandler>().FirstOrDefault(x => x.index == 0).OnPlayerDeadAnimationStarted -= player.PlayerController_OnPlayerDeadAnimationStarted;
         player.OnPlayerDead -= GameOver;
     }
 

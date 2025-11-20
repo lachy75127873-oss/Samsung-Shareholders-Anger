@@ -17,12 +17,10 @@ public class UiManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
             Init();
         }
         else if (instance == this)
         {
-            DontDestroyOnLoad(gameObject);
             Init();
         }
         else

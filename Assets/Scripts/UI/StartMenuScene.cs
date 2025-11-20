@@ -46,7 +46,7 @@ public class StartMenuScene : MonoBehaviour
     /// <summary>
     /// 초기 세팅, 버튼에 함수 등록 + 스코어 출력
     /// </summary>
-    private void Awake()
+    private void Start()
     {
         UiManager.Instance.InputStartMenu(this);
         lastScore.text = 0.ToString();
@@ -56,6 +56,7 @@ public class StartMenuScene : MonoBehaviour
         optionButton.onClick.AddListener(UiManager.Instance.TurnOption);
         optionExitButton.onClick.AddListener(UiManager.Instance.ExitOption);
     }
+
     private void OnDestroy()
     {
         startButton.onClick.RemoveAllListeners();
