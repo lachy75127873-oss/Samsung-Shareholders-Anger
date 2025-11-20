@@ -12,9 +12,16 @@ public class ScoreManager : MonoBehaviour
     public int totalScore;
     public int combo;
 
+    public int GetCurrentScore() => score;
+    public int GetTotalScore() => totalScore;
+    public int GetCombo() => combo;
+
     public void Update()
     {
-        CalculateScore();
+        if (ManagerRoot.gameManager.player != null)
+        {
+            CalculateScore();
+        }
     }
     
     public void Init()
@@ -24,12 +31,27 @@ public class ScoreManager : MonoBehaviour
         combo = 0;
         bonusScore = 500;
         totalScore = 0;
+
+        LoadBestScore();
     }
     
     //MainTitle 이전 LoadingScene
     private void ReadyMain()
     {
         Debug.Log("ScoreManage - 최고점수 로드");
+    }
+
+    private void LoadBestScore()
+    {
+        if (PlayerPrefs.HasKey("BestScore"))
+        {
+            bestScore = PlayerPrefs.GetInt("BestScore");
+            Debug.Log($"최고 점수 로드: {bestScore}");
+        }
+        else
+        {
+            bestScore = 0;
+        }
     }
 
     private void CalculateScore()
@@ -39,26 +61,51 @@ public class ScoreManager : MonoBehaviour
         score = sc;
         totalScore =score + calcBonus;
     }
-
-    public void SetBestScore()
-    {
-        //최고점수 저장
-        if (!PlayerPrefs.HasKey("BestScore"))
-        {
-            PlayerPrefs.SetInt("BestScore", totalScore);
-        }
-        else  if(totalScore > bestScore)
-        {
-            bestScore =totalScore;
-            PlayerPrefs.SetInt("BestScore", totalScore);
-        }
-    }
     
-    public void Reset()
+    public void Clear()
     {
         score = 0;
         totalScore = 0;
         bonusScore = 0;
         combo = 0;
     }
+
+    #region 점수 UI업데이트
+    private void UpdateUI()
+    {
+        // UiManager를 통해 GameSceneUI 업데이트
+        if (UiManager.Instance != null)
+        {
+            UiManager.Instance.InputScore(totalScore);
+        }
+    }
+
+    public void AddScore(int value)
+    {
+        score += value;
+        totalScore = score + (bonusScore * combo);
+        Debug.Log($"점수 추가: +{value} (총: {totalScore})");
+
+        // 즉시 UI 업데이트
+        UpdateUI();
+    }
+
+    public void SetBestScore()
+    {
+        if (!PlayerPrefs.HasKey("BestScore"))
+        {
+            PlayerPrefs.SetInt("BestScore", totalScore);
+            bestScore = totalScore;
+            Debug.Log($"최고 점수 첫 저장: {totalScore}");
+        }
+        else if (totalScore > bestScore)
+        {
+            bestScore = totalScore;
+            PlayerPrefs.SetInt("BestScore", totalScore);
+            Debug.Log($"최고 점수 갱신: {bestScore}");
+        }
+
+        PlayerPrefs.Save();
+    }
+    #endregion
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -125,47 +124,49 @@ public class SceneController : MonoBehaviour
    
     //"Loading"Scene에서 실행 매서드
 
-    public void LoadTargetScreen(ScreenState state)
+    public void OnLoadingScene()
     {
-        //외부에서 씬 전환하고 싶을 때 호출할 필요가 있어보여서...?
-        // OnLoadingScene 을 지역변수가 아니라 매개변수 사용하도록 바꾸면 될듯??
-    }
-    public void OnLoadingScene(ScreenState targetScreenState)
-    {
-        Debug.Log("OnLoadingScene");
-        
-        //로딩씬으로 이동
-        SceneManager.LoadScene("Loading");
-        
-        //UIManager - 로딩씬 켜라 -> 알아서 켜도 괜춘할듯
-        Debug.Log("Loading UI");
-        
-       //비동기식 로딩씬 await asynk -> 참고만
-       Debug.Log("로딩 시작");
-       StartCoroutine(LoadSceneRoutine(targetScreenState.ToString()));
-       Debug.Log($"{targetScreenState.ToString()}으로의 로딩완료");
+        Debug.Log($"로딩 시작: {targetState}");
+        StartCoroutine(LoadSceneRoutine(targetState.ToString()));
     }
 
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
+        Debug.Log($"LoadSceneRoutine 시작: {sceneName}");
+
         float timer = loadingTime;
         while (timer > 0f)
         {
             timer -= Time.deltaTime;
             yield return null;
         }
+
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
-        
-        // 로딩 끝날 때까지 반복
+
+        if (op == null)
+        {
+            Debug.LogError($"씬 로드 실패: {sceneName}");
+            yield break;
+        }
+
         while (!op.isDone)
         {
-            timer -= Time.deltaTime;
             yield return null;
         }
-        Debug.Log("로딩 코루틴 완료");
-        
+
+        Debug.Log($"LoadSceneRoutine 완료: {sceneName}");
     }
-    
+
+    public void LoadTargetScene(ScreenState targetScreenState)
+    {
+        Debug.Log($"로딩 요청: {targetScreenState}");
+
+        targetState = targetScreenState;
+
+        // Loading 씬으로 이동
+        SceneManager.LoadScene("Loading");
+    }
+
     private void LoadMainTitle()
     {
         Debug.Log("LoadToMainTitle");

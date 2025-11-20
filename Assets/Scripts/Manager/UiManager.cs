@@ -63,8 +63,11 @@ public class UiManager : MonoBehaviour
     internal static void LoadScene(string sceneName)
     {
         LoadingScene.nextScene = sceneName;
-        SceneManager.LoadScene("Loading");
-        ManagerRoot.Instance.sceneController.OnLoadingScene(ScreenState.Main_Game);
+        // sceneName에 따라 적절한 ScreenState 결정
+        ScreenState targetState = GetScreenStateFromSceneName(sceneName);
+
+        // SceneController에게 로딩 위임
+        ManagerRoot.Instance.sceneController.LoadTargetScene(targetState);
     }
     /// <summary>
     /// 로딩바를 코루틴으로 실행
@@ -72,18 +75,53 @@ public class UiManager : MonoBehaviour
     /// <returns></returns>
     internal IEnumerator LoadSceneProcess()
     {
-        AsyncOperation op = SceneManager.LoadSceneAsync(LoadingScene.nextScene);
+        // loadingScene이 등록될 때까지 대기
+        float waitTime = 0f;
+        while (loadingScene == null && waitTime < 2f)
+        {
+            waitTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        // AsyncOperation을 메서드 시작 부분에서 한 번만 선언
+        AsyncOperation op;
+
+        if (loadingScene == null)
+        {
+            Debug.LogError("[UiManager] loadingScene이 2초 내에 등록되지 않았습니다!");
+            // loadingBar 없이 씬만 로드
+            op = SceneManager.LoadSceneAsync(LoadingScene.nextScene);
+            yield return op;
+            yield break;
+        }
+
+        if (loadingScene.loadingBar == null)
+        {
+            Debug.LogError("[UiManager] loadingBar가 null입니다!");
+            // loadingBar 없이 씬만 로드
+            op = SceneManager.LoadSceneAsync(LoadingScene.nextScene);
+            yield return op;
+            yield break;
+        }
+
+        // 정상 로딩 프로세스
+        op = SceneManager.LoadSceneAsync(LoadingScene.nextScene);
         op.allowSceneActivation = false;
         float timer = 0f;
+
         while (!op.isDone)
         {
             yield return null;
+
             if (op.progress < 0.9f)
-            { loadingScene.loadingBar.fillAmount = op.progress; }
+            {
+                loadingScene.loadingBar.fillAmount = op.progress;
+            }
             else
             {
                 timer += Time.unscaledDeltaTime;
                 loadingScene.loadingBar.fillAmount = Mathf.Lerp(0.9f, 1f, timer);
+
                 if (loadingScene.loadingBar.fillAmount >= 1f)
                 {
                     op.allowSceneActivation = true;
@@ -163,5 +201,20 @@ public class UiManager : MonoBehaviour
     /// </summary>
     internal void Restart()
     { UiManager.LoadScene(gameSceneUI.gameSceneName); }
+
+
+    private static ScreenState GetScreenStateFromSceneName(string sceneName)
+    {
+        switch (sceneName)
+        {
+            case "Main_Title":
+                return ScreenState.Main_Title;
+            case "Main_Game":
+                return ScreenState.Main_Game;
+            default:
+                Debug.LogWarning($"알 수 없는 씬 이름: {sceneName}");
+                return ScreenState.Main_Game;
+        }
+    }
 
 }

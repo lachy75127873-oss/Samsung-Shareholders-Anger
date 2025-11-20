@@ -17,7 +17,6 @@ public class ManagerRoot : Singleton<ManagerRoot>
     {
         Debug.Log("ManagerRoot 초기화 시작");
 
-        scoreManager = new ScoreManager();
         dataManager = new DataManager("Data/Item", "Items");
         itemEffectManager = new ItemEffectManager();
         gameManager = _gameManager;

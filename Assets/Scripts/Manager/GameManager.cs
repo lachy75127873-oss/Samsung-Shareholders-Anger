@@ -32,10 +32,11 @@ public class GameManager : MonoBehaviour
         //Map초기화 매서드
     }
 
-    private void GameOver()
+    public void GameOver()
     {
         //플레이어 사망 판정 
         isDead = true;
+        UiManager.Instance.EndGame();
         player.OnPlayerDead -= GameOver;
     }
 
@@ -70,7 +71,7 @@ public class GameManager : MonoBehaviour
     private void ResetPlayerData()
     {
         ManagerRoot.Instance.itemEffectManager.Reset();
-        ManagerRoot.Instance.scoreManager.Reset();
+        ManagerRoot.Instance.scoreManager.Clear();
     }
 }
 
