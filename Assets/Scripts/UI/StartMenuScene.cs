@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class StartMenuScene : MonoBehaviour
 {
+    [Tooltip("종료버튼")]
+    [SerializeField] internal Button gameQuitButton;
     /// <summary>
     /// 시작버튼
     /// </summary>
@@ -55,6 +57,7 @@ public class StartMenuScene : MonoBehaviour
         startButton.onClick.AddListener(UiManager.Instance.StartGame);
         optionButton.onClick.AddListener(UiManager.Instance.TurnOption);
         optionExitButton.onClick.AddListener(UiManager.Instance.ExitOption);
+        gameQuitButton.onClick.AddListener(UiManager.Instance.QuitGame);
     }
 
     private void OnDestroy()
@@ -62,5 +65,6 @@ public class StartMenuScene : MonoBehaviour
         startButton.onClick.RemoveAllListeners();
         optionButton.onClick.RemoveAllListeners();
         optionExitButton.onClick.RemoveAllListeners();
+        gameQuitButton.onClick.RemoveAllListeners();
     }
 }

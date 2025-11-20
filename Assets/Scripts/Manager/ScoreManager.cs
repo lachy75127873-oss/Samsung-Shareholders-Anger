@@ -5,7 +5,7 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     private int score;
-
+    private int accumulatedBonus; // 누적 보너스 저장!
     public int bestScore;
     //스코어 매니저 초기화 로직
     public int bonusScore;
@@ -18,9 +18,10 @@ public class ScoreManager : MonoBehaviour
 
     public void Update()
     {
-        if (ManagerRoot.gameManager.player != null)
+        if (ManagerRoot.gameManager?.player != null)
         {
             CalculateScore();
+            UpdateUI();
         }
     }
     
@@ -31,6 +32,7 @@ public class ScoreManager : MonoBehaviour
         combo = 0;
         bonusScore = 500;
         totalScore = 0;
+        accumulatedBonus = 0;
 
         LoadBestScore();
     }
@@ -56,11 +58,12 @@ public class ScoreManager : MonoBehaviour
 
     private void CalculateScore()
     {
-        int sc = (int)(ManagerRoot.gameManager.player.transform.position.z * 100);
-        int calcBonus = (bonusScore * combo);
-        score = sc;
-        totalScore =score + calcBonus;
+        score = (int)(ManagerRoot.gameManager.player.transform.position.z * 100);
+        totalScore = score + accumulatedBonus;
+
+        Debug.Log($"[Score] score={score}, 누적보너스={accumulatedBonus}, total={totalScore}, combo={combo}");
     }
+
     
     public void Clear()
     {
@@ -80,13 +83,21 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
+    public void AddComboBonus()
+    {
+        combo++;
+
+        // 현재 콤보 * 500을 누적!
+        int currentBonus = combo * bonusScore;
+        accumulatedBonus += currentBonus;
+
+        UpdateUI();
+    }
+
     public void AddScore(int value)
     {
         score += value;
-        totalScore = score + (bonusScore * combo);
-        Debug.Log($"점수 추가: +{value} (총: {totalScore})");
-
-        // 즉시 UI 업데이트
+        totalScore = score + accumulatedBonus;
         UpdateUI();
     }
 

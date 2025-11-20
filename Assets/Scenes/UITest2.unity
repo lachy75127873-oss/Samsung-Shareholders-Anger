@@ -348,10 +348,50 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5322618788091426732, guid: 64ceb8927f378b642a975d5fbc511a1b,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5322618788091426732, guid: 64ceb8927f378b642a975d5fbc511a1b,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5322618788091426732, guid: 64ceb8927f378b642a975d5fbc511a1b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5322618788091426732, guid: 64ceb8927f378b642a975d5fbc511a1b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6175025702062475171, guid: 64ceb8927f378b642a975d5fbc511a1b,
         type: 3}
       propertyPath: m_Name
       value: GameUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 7799912977594470176, guid: 64ceb8927f378b642a975d5fbc511a1b,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7799912977594470176, guid: 64ceb8927f378b642a975d5fbc511a1b,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7799912977594470176, guid: 64ceb8927f378b642a975d5fbc511a1b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7799912977594470176, guid: 64ceb8927f378b642a975d5fbc511a1b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -658,7 +698,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ead850eabe1937346a849f69ac23df66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapPrefabs: []
+  easyMaps: []
+  normalMaps: []
+  hardMaps: []
 --- !u!4 &1125567045
 Transform:
   m_ObjectHideFlags: 0

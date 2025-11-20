@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 public class GameSceneUI : MonoBehaviour
 {
+    [Header("스코어 UI")]
+    [SerializeField] private GameObject scoreUI;
+
     [Header("주가 표시창")]
     /// <summary>
     /// 현재 주가를 띄우는 텍스트
@@ -89,16 +92,57 @@ public class GameSceneUI : MonoBehaviour
     /// </summary>
     internal bool firstItem = false;
     internal bool secondItem = false;
+
     private void Awake()
     {
         UiManager.Instance.InputGameMenu(this);
-        currentScore.text = 0f.ToString();
-        currentPercent.text = $"{0f.ToString()}%";//수정해야 됨.
-        alarmShow.SetActive(false);
-        goToMain.onClick.AddListener(UiManager.Instance.GoToMenu);
-        restart.onClick.AddListener(UiManager.Instance.Restart);
-        previousScore = 0;//이전 회차의 점수를 넣어야 함
+
+        // 초기화
+        if (currentScore != null)
+            currentScore.text = "0";
+
+        if (currentPercent != null)
+            currentPercent.text = "0%";
+
+        if (alarmShow != null)
+            alarmShow.SetActive(false);
+
+        if (endUI != null)
+            endUI.SetActive(false);
+
+        // 버튼 이벤트
+        if (goToMain != null)
+            goToMain.onClick.AddListener(UiManager.Instance.GoToMenu);
+
+        if (restart != null)
+            restart.onClick.AddListener(UiManager.Instance.Restart);
+
+        previousScore = 0;
     }
+
+    public void ShowGameOver(int currentScore, int bestScore)
+    {
+        Debug.Log($"게임 오버 - 현재: {currentScore}, 최고: {bestScore}");
+        scoreUI.SetActive(false);
+
+        // 점수 표시
+        if (currentEndScore != null)
+        {
+            currentEndScore.text = currentScore.ToString("N0");
+        }
+
+        if (highestEndScore != null)
+        {
+            highestEndScore.text = bestScore.ToString("N0");
+        }
+
+        // 게임 오버 UI 활성화
+        if (endUI != null)
+        {
+            endUI.SetActive(true);
+        }
+    }
+
     /// <summary>
     /// 아이템 습득시 UI를 띄우며 쿨타임 시작.
     /// </summary>
