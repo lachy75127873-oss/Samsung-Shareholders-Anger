@@ -367,20 +367,20 @@ MonoBehaviour:
   itemUIPrefeb: {fileID: 1653126378735389299}
   itemUIPrefeb2: {fileID: 3680131112142762751}
   endUI: {fileID: 8299790907659771975}
-  endIcon: {fileID: 0}
-  highIcon: {fileID: 0}
-  lowIcon: {fileID: 0}
+  endIcon: {fileID: 5979411357601905449}
+  highIcon: {fileID: -1017044460, guid: fe0a1042b0468354286ed2052e56420a, type: 3}
+  lowIcon: {fileID: 1620564899, guid: fe0a1042b0468354286ed2052e56420a, type: 3}
   currentEndScore: {fileID: 4754987333878822537}
   highestEndScore: {fileID: 1577868117020968093}
-  EndPercent: {fileID: 0}
+  EndPercent: {fileID: 8918952285253333811}
   goToMain: {fileID: 7023717884818776932}
   restart: {fileID: 1232170983106598885}
   mainSceneName: Main_Title
   gameSceneName: Main_Game
-  EndNews1: {fileID: 0}
-  EndNews2: {fileID: 0}
-  EndNews3: {fileID: 0}
-  EndNews4: {fileID: 0}
+  EndNews1: {fileID: 4042985825913530100}
+  EndNews2: {fileID: 5439548617886154671}
+  EndNews3: {fileID: 180101186064904576}
+  EndNews4: {fileID: 8170743826726722344}
 --- !u!1 &1205636973853147639
 GameObject:
   m_ObjectHideFlags: 0
