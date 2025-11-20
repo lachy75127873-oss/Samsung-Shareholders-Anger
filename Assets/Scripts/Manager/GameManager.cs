@@ -36,10 +36,21 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         //플레이어 사망 판정 
+        if (isDead)
+            return; 
+
         isDead = true;
-        UiManager.Instance.EndGame();
-        player.animator.GetBehaviours<PlayerDeadAnimationEndHandler>().FirstOrDefault(x => x.index == 0).OnPlayerDeadAnimationStarted -= player.PlayerController_OnPlayerDeadAnimationStarted;
-        player.OnPlayerDead -= GameOver;
+
+        Debug.Log("[GameManager] 게임 오버!");
+
+        // 최고 점수 저장
+        ManagerRoot.Instance.scoreManager.SetBestScore();
+
+        // UI 표시
+        if (UiManager.Instance != null)
+        {
+            UiManager.Instance.EndGame();
+        }
     }
 
 
@@ -67,6 +78,7 @@ public class GameManager : MonoBehaviour
     public void UnregisterPlayer()
     {
         player = null;
+        isDead = false;
         ResetPlayerData();
     }
 

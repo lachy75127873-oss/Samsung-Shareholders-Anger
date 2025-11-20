@@ -8,6 +8,7 @@ public class Item : MonoBehaviour
     private ItemData itemData;
     private MeshRenderer meshRenderer;
     private Collider itemCollider;
+    private AudioManager audioManager;
 
     #region 유니티 CallBack
     private void Awake()
@@ -24,6 +25,7 @@ public class Item : MonoBehaviour
     private void Start()
     {
         itemData = ManagerRoot.Instance.dataManager.GetItemData(itemID);
+        audioManager = ManagerRoot.Instance.audioManager;
     }
     #endregion
 
@@ -43,6 +45,9 @@ public class Item : MonoBehaviour
 
             meshRenderer.enabled = false;
             itemCollider.enabled = false;
+
+            if(itemID != 100)
+                audioManager.PlayGetItem();
         }
     }
 }
