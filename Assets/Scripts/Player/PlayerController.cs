@@ -345,7 +345,6 @@ public class PlayerController : MonoBehaviour
         if (lastSideInput != null)
             ResotreLastRail();
         rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
-        isDead = false;
         isDeadChecked = true;
     }
     #endregion
