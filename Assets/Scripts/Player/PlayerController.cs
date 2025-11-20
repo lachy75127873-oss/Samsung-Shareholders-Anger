@@ -71,12 +71,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float airborneTimer = 0f;
     [SerializeField][Tooltip("좌우 이동용 Pos")] Vector3 targetMovePos;
     [SerializeField][Tooltip("점프 시점 기억용 Pos")] Vector3 beforeJumpPos;
-#if UNITY_EDITOR
     [SerializeField] bool StopRun = false;
-    [SerializeField][Tooltip("현재 Pos Debug용")] Vector3 currentPos;
-    [SerializeField][Tooltip("현재 Velocity Debug용")] Vector3 currentVelocity;
-
-#endif
     #endregion
 
     #region Fields & Properties
@@ -112,40 +107,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region LifeCycle
-
-#if UNITY_EDITOR
-
-    private void Reset()
-    {
-        animator = GameObject.Find("Root").GetComponent<Animator>();
-        rb = GameObject.Find("Player").GetComponent<Rigidbody>();
-        capsuleCollider = GameObject.Find("Player").GetComponent<CapsuleCollider>();
-        injuryRayPoint = GameObject.Find("RayPoint").transform;
-        itemRootRange = GetComponentInChildren<PlayerItemRootRange>();
-
-        #region /*초기 값 세팅*/
-
-        runSpeed = 30f;
-        sideMoveSpeed = 100f;
-        sideMoveDistance = 30f;
-        currentRail = default;
-        jumpPower = 200f;
-        MaxHeight = 30f;
-        airborneTime = 3f;
-        velocityY = -1f;
-        fallAccel = 20f;
-        landDistance = 2.65f;
-        groundLayerMask = LayerMask.GetMask("Default");
-        rayRadius = 3.2f;
-        startRayY = 2.7f;
-        slidDownSpeed = 400f;
-        defaultCollider = new(1.8f, 3.6f);
-        slideCollider = new(0.8f, 1.5f);
-
-        #endregion
-    }
-#endif
-
     private void Awake()
     {
         ManagerRoot.gameManager.RegisterPlayer(this);
@@ -199,39 +160,6 @@ public class PlayerController : MonoBehaviour
                 animator.SetFloat(nameof(PlayerAnimationParameter.isInjury), 0f);
             }
         }
-
-#if UNITY_EDITOR
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            StopRun = false;
-            isDead = false;
-            isJump = false;
-            isAirborne = false;
-            isSlide = false;
-            airborneTimer = default;
-            currentRail = default;
-            transform.position = default;
-            rb.position = default;
-            rb.useGravity = true;
-
-            animator.SetBool(nameof(PlayerAnimationParameter.isJump), false);
-            animator.SetBool(nameof(PlayerAnimationParameter.isSlide), false);
-            animator.SetBool(nameof(PlayerAnimationParameter.isDead), false);
-        }
-        else if (Input.GetKeyDown(KeyCode.X))
-        {
-            Debug.Log("게임 오버");
-            isDead = true;
-            OnPlayerDead?.Invoke();
-            animator.SetBool(nameof(PlayerAnimationParameter.isDead), true);
-        }
-
-        else if (Input.GetKeyDown(KeyCode.I))
-        {
-            ManagerRoot.Instance.itemEffectManager?.DebugLogStatus();
-        }
-#endif
     }
 
     private void FixedUpdate()
@@ -288,11 +216,6 @@ public class PlayerController : MonoBehaviour
             // 계산된 속도로 이동
             rb.MovePosition(rb.position + runSpeed * Time.fixedDeltaTime * Vector3.forward);
         }
-
-#if UNITY_EDITOR
-        currentVelocity = rb.velocity;
-        currentPos = rb.position;
-#endif
     }
 
     private void OnDestroy()

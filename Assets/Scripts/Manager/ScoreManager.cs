@@ -69,8 +69,11 @@ public class ScoreManager : MonoBehaviour
     {
         score = 0;
         totalScore = 0;
-        bonusScore = 0;
+        bonusScore = 500;
         combo = 0;
+        accumulatedBonus = 0;
+
+        Debug.Log("점수 초기화 완료");
     }
 
     #region 점수 UI업데이트
