@@ -799,7 +799,7 @@ Transform:
   m_GameObject: {fileID: 3885799705141324932}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.017, y: 2.35, z: -0.01}
+  m_LocalPosition: {x: 0.017, y: 1.33, z: -0.01}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2044,8 +2044,7 @@ MonoBehaviour:
   targetMovePos: {x: 0, y: 0, z: 0}
   beforeJumpPos: {x: 0, y: 0, z: 0}
   StopRun: 0
-  currentPos: {x: 0, y: 0, z: 0}
-  currentVelocity: {x: 0, y: 0, z: 0}
+  isDeadChecked: 0
 --- !u!54 &3220018429599094685
 Rigidbody:
   m_ObjectHideFlags: 0
