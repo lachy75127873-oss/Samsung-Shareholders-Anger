@@ -89,11 +89,13 @@ public class SceneController : MonoBehaviour
          */
         Debug.Log("MainTitle UI");
         //targetState = ScreenState.Main_Game;
-        
+
         // 로딩씬으로
         //Debug.Log("3초 대기");
         //Invoke(nameof(OnLoadingScene), 3);
-        
+
+        /*타이틀 BGM 실행*/
+        ManagerRoot.Instance.audioManager.PlayTitleBGM();
     }
 
     #endregion
@@ -104,18 +106,21 @@ public class SceneController : MonoBehaviour
     {
         Debug.Log("OnMainGame");
         //UIManager야 게임 UI 켜라
-        
+
         //ScoreManager - 점수 초기화
-        
+
         //GameManager - 스테이지 초기화(플레이어 정보 & 맵 배치 등)(속도, 생사, 위치 등)
-        
+
         //GameManager = 게임오버 판정
-        
+
         //ScoreManager - 최고점수 갱신
-        
+
         // 로딩씬으로
         //Debug.Log("3초 대기");
         //Invoke(nameof(OnLoadingScene), 3);
+
+        /*InGame BGM 실행*/
+        ManagerRoot.Instance.audioManager.PlayInGameBGM();
     }
 
     #endregion

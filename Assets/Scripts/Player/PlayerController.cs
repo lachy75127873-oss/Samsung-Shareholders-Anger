@@ -80,7 +80,9 @@ public class PlayerController : MonoBehaviour
 #endif
     #endregion
 
-    #region Properties
+    #region Fields & Properties
+
+    private AudioManager audio;
     public bool IsGrounded
     {
         get => isGrounded;
@@ -105,7 +107,9 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Event
+
     public event Action OnPlayerDead;
+
     #endregion
 
     #region LifeCycle
@@ -146,6 +150,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         ManagerRoot.gameManager.RegisterPlayer(this);
+        audio = ManagerRoot.Instance.audioManager;
     }
 
     private void OnEnable()
@@ -316,6 +321,8 @@ public class PlayerController : MonoBehaviour
             isSlide = false;
             if (animator.GetBool(nameof(PlayerAnimationParameter.isSlide)))
                 animator.SetBool(nameof(PlayerAnimationParameter.isSlide), false);
+
+            audio.PlayJump();
         }
     }
     public void OnSlide(InputAction.CallbackContext context)
@@ -561,11 +568,6 @@ public class PlayerController : MonoBehaviour
             ManagerRoot.Instance.scoreManager.combo += 1;
             //Debug.LogWarning(ManagerRoot.Instance.scoreManager.combo);
         }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-
     }
 
     #endregion

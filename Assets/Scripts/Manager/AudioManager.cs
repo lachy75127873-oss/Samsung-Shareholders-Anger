@@ -42,15 +42,27 @@ public class AudioManager : MonoBehaviour
         UserAudios = new()
         {
             { AudioMixerGroupName.Master, master},
-            { AudioMixerGroupName.BGM, master},
-            { AudioMixerGroupName.SFX, master},
+            { AudioMixerGroupName.BGM, bgm},
+            { AudioMixerGroupName.SFX, sfx},
         };
+
+        foreach(var key in UserAudios.Keys)
+        {
+            var s_key = key.ToString();
+            if (PlayerPrefs.HasKey(s_key))
+            {
+                UserAudios[key].audioMixer.SetFloat(
+                    s_key, PlayerPrefs.GetFloat(s_key, default)
+                );
+            }
+        }
     }
 
     #region UserUIAdjust
     public void SetVolume(AudioMixerGroupName name, float value)
     {
         UserAudios[name].audioMixer.SetFloat(name.ToString(), value);
+        PlayerPrefs.SetFloat(name.ToString(), value);
     }
 
     public float GetVolume(AudioMixerGroupName name)
