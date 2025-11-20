@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public enum PlayerAnimationParameter
 {
@@ -82,7 +81,7 @@ public class PlayerController : MonoBehaviour
 
     #region Fields & Properties
 
-    private AudioManager audio;
+    private AudioManager audioManager;
     public bool IsGrounded
     {
         get => isGrounded;
@@ -150,7 +149,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         ManagerRoot.gameManager.RegisterPlayer(this);
-        audio = ManagerRoot.Instance.audioManager;
+        audioManager = ManagerRoot.Instance.audioManager;
     }
 
     private void OnEnable()
@@ -322,7 +321,7 @@ public class PlayerController : MonoBehaviour
             if (animator.GetBool(nameof(PlayerAnimationParameter.isSlide)))
                 animator.SetBool(nameof(PlayerAnimationParameter.isSlide), false);
 
-            audio.PlayJump();
+            audioManager.PlayJump();
         }
     }
     public void OnSlide(InputAction.CallbackContext context)
@@ -415,7 +414,11 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = Vector3.zero;
 
-        if(lastSideInput != null)
+        Debug.Log(currentRail);
+        Debug.Log(lastSideInput);
+        Debug.Log(targetMovePos.x);
+        
+        if (lastSideInput != null)
             ResotreLastRail();
         rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
         isDead = false;
@@ -438,6 +441,7 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(rays[i], injuryRayLength, injuryLayerMask))
             {
                 isInjured = true;
+                animator.SetBool(nameof(PlayerAnimationParameter.isJump), false);
                 animator.SetBool(nameof(PlayerAnimationParameter.isSpin), true);
                 animator.SetFloat(nameof(PlayerAnimationParameter.isInjury), 1f);
                 return true;
@@ -560,12 +564,14 @@ public class PlayerController : MonoBehaviour
             }
             isDead = true;
             animator.SetBool(nameof(PlayerAnimationParameter.isDead), true);
+
             ManagerRoot.gameManager.GameOver();
         }
 
         if(other.CompareTag("ScoreCheck"))
         {
-            ManagerRoot.Instance.scoreManager.combo += 1;
+            ManagerRoot.Instance.scoreManager.AddComboBonus();
+            //ManagerRoot.Instance.scoreManager.combo += 1;
             //Debug.LogWarning(ManagerRoot.Instance.scoreManager.combo);
         }
     }
@@ -587,7 +593,7 @@ public class PlayerController : MonoBehaviour
     public void SetMaxHeight(float value)
     {
         MaxHeight = value;
-        Debug.Log($"[Item] 최대 높이 변경: {value}");
+        //Debug.Log($"[Item] 최대 높이 변경: {value}");
     }
 
     public void EnableMagnetRange(float range)
@@ -608,7 +614,8 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Speed Control
-    // <summary>
+
+    /// <summary>
     /// runSpeed 업데이트 (거리에 따라 증가)
     /// </summary>
     private void UpdateRunSpeed()
