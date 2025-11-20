@@ -21,8 +21,8 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] Rigidbody rb;
     [SerializeField][Range(0, 1000)][Tooltip("달리기 속도")] float runSpeed;
-    [SerializeField][Range(0, 15)][Tooltip("최대 속도 증가량")] float maxSpeedBonus = 12f;
-    [SerializeField][Range(0, 0.01f)][Tooltip("속도 증가 배율")] float speedIncreaseRate = 0.005f;
+    [SerializeField][Range(0, 15)][Tooltip("최대 속도 증가량")] float maxSpeedBonus = 12;
+    [SerializeField][Range(0, 0.01f)][Tooltip("속도 증가 배율")] float speedIncreaseRate = 0.006f;
     private float baseSpeed; // 원본 속도 저장
     private float startPositionZ; // 시작 지점
 
@@ -346,6 +346,7 @@ public class PlayerController : MonoBehaviour
             ResotreLastRail();
         rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
         isDeadChecked = true;
+        //rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
     }
     #endregion
 
@@ -423,7 +424,7 @@ public class PlayerController : MonoBehaviour
         if (airborneTimer >= airborneTime)
         {
             isAirborne = false;
-            rb.useGravity = true;
+            //rb.useGravity = true;
             airborneTimer = default;
             rb.velocity = new(rb.velocity.x, velocityY, rb.velocity.z);
         }
@@ -434,7 +435,7 @@ public class PlayerController : MonoBehaviour
         rb.position = new(rb.position.x, beforeJumpPos.y + MaxHeight, rb.position.z);
 
         isAirborne = true;
-        rb.useGravity = false;
+        //rb.useGravity = false;
     }
     bool IsMaxHeight()
     {
