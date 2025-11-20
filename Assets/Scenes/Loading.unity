@@ -278,6 +278,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2327801316245572123, guid: 57353e4ff1d7373438a03f30fabe8e52,
+        type: 3}
+      propertyPath: m_ScreenMatchMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2468838840149300044, guid: 57353e4ff1d7373438a03f30fabe8e52,
         type: 3}
       propertyPath: m_Pivot.x

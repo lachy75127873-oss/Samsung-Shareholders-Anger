@@ -11,10 +11,12 @@ public class ScoreManager : MonoBehaviour
     public int bonusScore;
     public int totalScore;
     public int combo;
+    public int lastScore;
 
     public int GetCurrentScore() => score;
     public int GetTotalScore() => totalScore;
     public int GetCombo() => combo;
+    public int GetLastScore() => lastScore;
 
     public void Update()
     {
@@ -24,7 +26,7 @@ public class ScoreManager : MonoBehaviour
             UpdateUI();
         }
     }
-    
+
     public void Init()
     {
         Debug.Log("ScoreManage initialized)");
@@ -60,8 +62,6 @@ public class ScoreManager : MonoBehaviour
     {
         score = (int)(ManagerRoot.gameManager.player.transform.position.z * 100);
         totalScore = score + accumulatedBonus;
-
-        Debug.Log($"[Score] score={score}, 누적보너스={accumulatedBonus}, total={totalScore}, combo={combo}");
     }
 
     

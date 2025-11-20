@@ -54,8 +54,7 @@ public class ItemEffectManager
     private void ApplyCoin(ItemData itemData)
     {
         int coinValue = GetValue(itemData, 0, 1);
-        ManagerRoot.gameManager.gold += coinValue;
-        Debug.Log($"코인 획득: +{coinValue} (총: {ManagerRoot.gameManager.gold})");
+        ManagerRoot.Instance.scoreManager.totalScore += coinValue;
     }
 
     private void ApplyBuff(ItemData itemData)
@@ -152,7 +151,6 @@ public class ItemEffectManager
 
     public void DebugLogStatus()
     {
-        Debug.Log($"[ItemEffect] ========== 현재 상태 ==========");
         Debug.Log($"활성 버프 개수: {activeItems.Count}");
 
         if (activeItems.Count > 0)
@@ -178,7 +176,5 @@ public class ItemEffectManager
             Debug.Log($"현재 점프력: {ManagerRoot.gameManager.player.jumpPower}");
             Debug.Log($"현재 최대높이: {ManagerRoot.gameManager.player.MaxHeight}");
         }
-
-        Debug.Log($"========================================");
     }
 }
