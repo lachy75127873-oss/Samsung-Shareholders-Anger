@@ -82,6 +82,9 @@ public class GameSceneUI : MonoBehaviour
     /// </summary>
     [Tooltip("종료 UI")]
     [SerializeField] internal GameObject endUI;
+    [SerializeField] internal Image endIcon;
+    [SerializeField] internal Sprite highIcon;
+    [SerializeField] internal Sprite lowIcon;
     [SerializeField] internal Text currentEndScore;
     [SerializeField] internal Text highestEndScore;
     [SerializeField] internal Text EndPercent;
@@ -89,6 +92,10 @@ public class GameSceneUI : MonoBehaviour
     [SerializeField] internal Button restart;
     [SerializeField] internal string mainSceneName;
     [SerializeField] internal string gameSceneName;
+    [SerializeField] internal GameObject EndNews1;
+    [SerializeField] internal GameObject EndNews2;
+    [SerializeField] internal GameObject EndNews3;
+    [SerializeField] internal GameObject EndNews4;
     /// <summary>
     /// 퍼센트 수치를 재기 시작하는 최소값
     /// </summary>
@@ -132,7 +139,6 @@ public class GameSceneUI : MonoBehaviour
     {
         Debug.Log($"게임 오버 - 현재: {currentScore}, 최고: {bestScore}");
         scoreUI.SetActive(false);
-
         // 점수 표시
         if (currentEndScore != null)
         {
@@ -142,6 +148,52 @@ public class GameSceneUI : MonoBehaviour
         if (highestEndScore != null)
         {
             highestEndScore.text = bestScore.ToString("N0");
+        }
+        if (EndPercent != null)
+        {
+            float floCurScore = currentScore;
+            float floBestScore = bestScore;
+            float floPercent = currentScore / bestScore;
+            byte roundPercent = (byte)Mathf.Round(floPercent * 100);
+            if (roundPercent <= 0)
+            {
+                endIcon.sprite = lowerIcon;
+                EndPercent.color = Color.red;
+            }
+            else
+            {
+                endIcon.sprite = higherIcon;
+                EndPercent.color = Color.green;
+            }
+            EndPercent.text = $"{roundPercent.ToString("N0")}%";
+            if (roundPercent < 50)
+            {
+                EndNews1.SetActive(true);
+                EndNews2.SetActive(false);
+                EndNews3.SetActive(false);
+                EndNews4.SetActive(false);
+            }
+            else if (roundPercent > 50 && roundPercent < 80)
+            {
+                EndNews1.SetActive(false);
+                EndNews2.SetActive(true);
+                EndNews3.SetActive(false);
+                EndNews4.SetActive(false);
+            }
+            else if (roundPercent > 80 && roundPercent < 100)
+            {
+                EndNews1.SetActive(false);
+                EndNews2.SetActive(false);
+                EndNews3.SetActive(true);
+                EndNews4.SetActive(false);
+            }
+            else if (roundPercent < 100)
+            {
+                EndNews1.SetActive(false);
+                EndNews2.SetActive(false);
+                EndNews3.SetActive(false);
+                EndNews4.SetActive(true);
+            }
         }
 
         // 게임 오버 UI 활성화
