@@ -45,8 +45,7 @@ public class MapPooling : MonoBehaviour
     {
         foreach (Transform child in map.GetComponentsInChildren<Transform>(true))
         {
-            if (child.CompareTag("Train") || child.CompareTag("Coin") ||
-                child.name.Contains("Train") || child.name.Contains("Coin"))
+            if (child.CompareTag("Train") || child.CompareTag("Coin") || child.name.Contains("Train") || child.name.Contains("Coin"))
             {
                 var obj = child.gameObject;
                 initialPositions[obj] = obj.transform.localPosition;
@@ -88,6 +87,7 @@ public class MapPooling : MonoBehaviour
                 GameObject obj = Instantiate(easyMaps[i], transform); // 자식으로 프리팹들 생성후
                 obj.SetActive(false); // 비활성화
                 easyMappool.Add(obj); // 풀에 넣기
+                SaveInitialStates(obj);
             }
         }
         for (int i = 0; i < normalMaps.Length; i++)
@@ -97,6 +97,7 @@ public class MapPooling : MonoBehaviour
                 GameObject obj = Instantiate(normalMaps[i], transform);
                 obj.SetActive(false);
                 normalMappool.Add(obj);
+                SaveInitialStates(obj);
             }
         }
         for (int i = 0; i < hardMaps.Length; i++)
@@ -106,6 +107,7 @@ public class MapPooling : MonoBehaviour
                 GameObject obj = Instantiate(hardMaps[i], transform);
                 obj.SetActive(false);
                 hardMappool.Add(obj);
+                SaveInitialStates(obj);
             }
         }
     }
