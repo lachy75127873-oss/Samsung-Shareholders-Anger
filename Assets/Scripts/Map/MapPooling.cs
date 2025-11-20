@@ -140,7 +140,7 @@ public class MapPooling : MonoBehaviour
     GameObject GetRandomeMap() // 랜덤으로 뽑기
     {
         RandMap.Clear();
-        int level = Mathf.FloorToInt(player.transform.position.z / 500f); // 거리 500마다 레벨 증가
+        int level = Mathf.FloorToInt(player.transform.position.z / 360f); // 거리 500마다 레벨 증가
         level = Mathf.Clamp(level, 1, 5);
 
         switch (level)
