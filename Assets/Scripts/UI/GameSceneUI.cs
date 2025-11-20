@@ -23,17 +23,17 @@ public class GameSceneUI : MonoBehaviour
     /// <summary>
     /// 전일보다 주가가 낮을때 뜨는 아이콘
     /// </summary>
-    [Tooltip("전일보다 주가가 낮을때 뜨는 아이콘")]
+    [Tooltip("최고가 보다 주가가 낮을때 뜨는 아이콘")]
     [SerializeField] internal Sprite lowerIcon;
     /// <summary>
     /// 전일보다 주가가 높을때 뜨는 아이콘
     /// </summary>
-    [Tooltip("전일보다 주가가 높을때 뜨는 아이콘")]
+    [Tooltip("최고가 보다 주가가 높을때 뜨는 아이콘")]
     [SerializeField] internal Sprite higherIcon;
     /// <summary>
     /// 전일대비 퍼센트 표시하는 텍스트
     /// </summary>
-    [Tooltip("전일대비 퍼센트 표시하는 텍스트")]
+    [Tooltip("최고가 대비 퍼센트 표시하는 텍스트")]
     [SerializeField] internal Text currentPercent;
     /// <summary>
     /// 옵션 재생버튼
@@ -84,6 +84,7 @@ public class GameSceneUI : MonoBehaviour
     [SerializeField] internal GameObject endUI;
     [SerializeField] internal Text currentEndScore;
     [SerializeField] internal Text highestEndScore;
+    [SerializeField] internal Text EndPercent;
     [SerializeField] internal Button goToMain;
     [SerializeField] internal Button restart;
     [SerializeField] internal string mainSceneName;
@@ -115,6 +116,8 @@ public class GameSceneUI : MonoBehaviour
         if (endUI != null)
             endUI.SetActive(false);
 
+        if (EndPercent != null)
+            EndPercent.text = "0%";
         // 버튼 이벤트
         if (goToMain != null)
             goToMain.onClick.AddListener(UiManager.Instance.GoToMenu);
