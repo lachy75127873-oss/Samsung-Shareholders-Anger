@@ -33,7 +33,7 @@
 |[곽민진](https://github.com/parkha6)|  
 ##프레임 워크  
 ![프레임워크 1](https://raw.githubusercontent.com/lachy75127873-oss/Samsung-Shareholders-Anger/14e7733c6fb04488e09c7d070c3cbaa2fa09843d/ReadMeScreenShot/frameWork.jpg)  
-![프레임워크 2]()  
+![프레임워크 2](https://github.com/lachy75127873-oss/Samsung-Shareholders-Anger/blob/main/ReadMeScreenShot/frameWork2.jpg?raw=true)  
 ![프레임워크 3]()  
 ![프레임워크 4]()  
 ##에셋 저작권  
