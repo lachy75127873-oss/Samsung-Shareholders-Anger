@@ -35,6 +35,11 @@ public class GameSceneUI : MonoBehaviour
     /// </summary>
     [Tooltip("전일대비 퍼센트 표시하는 텍스트")]
     [SerializeField] internal Text currentPercent;
+    /// <summary>
+    /// 옵션 재생버튼
+    /// </summary>
+    [Tooltip("옵션 재생버튼")]
+    [SerializeField] internal Button OptionButton;
     [Header("알림 창")]
     /// <summary>
     /// 알람을 보여주는 퍼센트 수치
