@@ -2044,8 +2044,7 @@ MonoBehaviour:
   targetMovePos: {x: 0, y: 0, z: 0}
   beforeJumpPos: {x: 0, y: 0, z: 0}
   StopRun: 0
-  currentPos: {x: 0, y: 0, z: 0}
-  currentVelocity: {x: 0, y: 0, z: 0}
+  isDeadChecked: 0
 --- !u!54 &3220018429599094685
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2068,7 +2067,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 2
   m_Constraints: 112
