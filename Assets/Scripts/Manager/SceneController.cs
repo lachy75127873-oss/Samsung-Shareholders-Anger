@@ -137,6 +137,7 @@ public class SceneController : MonoBehaviour
         float timer = loadingTime;
         while (timer > 0f)
         {
+            UiManager.Instance.LoadingBar(1f-timer/10);
             timer -= Time.deltaTime;
             yield return null;
         }

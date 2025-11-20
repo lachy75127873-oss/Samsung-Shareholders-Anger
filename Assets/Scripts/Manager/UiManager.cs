@@ -128,6 +128,9 @@ public class UiManager : MonoBehaviour
             }
         }
     }
+
+    internal void LoadingBar(float progress)
+    { loadingScene.loadingBar.fillAmount = progress; }
     //--------------게임씬
     /// <summary>
     /// score에 넣은 값이 현재 주가로 표시됨.
