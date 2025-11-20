@@ -34,7 +34,8 @@ public class UiManager : MonoBehaviour
     StartMenuScene startMenuScene;
     LoadingScene loadingScene;
     GameSceneUI gameSceneUI;
-
+    internal float lastDayPercent = 0f;
+    internal int lastDayScore = 0;
     internal void InputStartMenu(StartMenuScene start)
     { startMenuScene = start; }
     internal void InputloadingScene(LoadingScene load)
@@ -176,6 +177,11 @@ public class UiManager : MonoBehaviour
 
         // 최고 점수 저장
         ManagerRoot.Instance.scoreManager.SetBestScore();
+    }
+    internal void SaveLastScore(int score, float percent)
+    {
+        lastDayScore = score;
+        lastDayPercent = percent;
     }
     /// <summary>
     /// 매뉴로 가는 키

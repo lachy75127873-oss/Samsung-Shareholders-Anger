@@ -151,10 +151,7 @@ public class GameSceneUI : MonoBehaviour
         }
         if (EndPercent != null)
         {
-            Debug.Log(currentScore);
-            Debug.Log(bestScore);
-            float floPercent = (float)currentScore / bestScore;
-            Debug.Log(floPercent);
+            float floPercent = (float)currentScore / bestScore;     
             if (floPercent <= 0.5)
             {
                 endIcon.sprite = lowerIcon;
@@ -166,6 +163,7 @@ public class GameSceneUI : MonoBehaviour
                 EndPercent.color = Color.green;
             }
             EndPercent.text = $"{(floPercent*100).ToString("N0")}%";
+            UiManager.Instance.SaveLastScore(currentScore, floPercent);
             if (floPercent < 0.5)
             {
                 EndNews1.SetActive(true);

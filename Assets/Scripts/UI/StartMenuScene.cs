@@ -45,15 +45,30 @@ public class StartMenuScene : MonoBehaviour
     /// </summary>
     [Tooltip("전판 점수 대비 퍼센트")]
     [SerializeField] internal Text percentScore;
+    [SerializeField] Image arrowIcon;
+    [SerializeField] Sprite lowerArrow;
+    [SerializeField] Sprite higherArrow;
     /// <summary>
     /// 초기 세팅, 버튼에 함수 등록 + 스코어 출력
     /// </summary>
     private void Start()
     {
         UiManager.Instance.InputStartMenu(this);
-        lastScore.text = ManagerRoot.Instance.scoreManager.GetLastScore().ToString();
+        //lastScore.text = ManagerRoot.Instance.scoreManager.GetLastScore().ToString();
+        lastScore.text = UiManager.Instance.lastDayScore.ToString("N0");
         highestScore.text = ManagerRoot.Instance.scoreManager.bestScore.ToString();
-        percentScore.text = $"{0.ToString()}%";//임시임. 스코어 매니저랑 상의해야 됨.
+        float percent = UiManager.Instance.lastDayPercent;
+        percentScore.text = $"{(percent*100).ToString("N0")}%";//임시임. 스코어 매니저랑 상의해야 됨.
+        if (percent <= 0.5)
+        {
+            arrowIcon.sprite = lowerArrow;
+            percentScore.color = Color.red;
+        }
+        else
+        {
+            arrowIcon.sprite = higherArrow;
+            percentScore.color = Color.green;
+        }
         startButton.onClick.AddListener(UiManager.Instance.StartGame);
         optionButton.onClick.AddListener(UiManager.Instance.TurnOption);
         optionExitButton.onClick.AddListener(UiManager.Instance.ExitOption);
