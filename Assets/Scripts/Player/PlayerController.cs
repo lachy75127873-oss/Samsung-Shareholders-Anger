@@ -71,8 +71,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float airborneTimer = 0f;
     [SerializeField][Tooltip("좌우 이동용 Pos")] Vector3 targetMovePos;
     [SerializeField][Tooltip("점프 시점 기억용 Pos")] Vector3 beforeJumpPos;
-#if UNITY_EDITOR
     [SerializeField] bool StopRun = false;
+    [SerializeField] bool isDeadChecked = false;
+#if UNITY_EDITOR
+
     [SerializeField][Tooltip("현재 Pos Debug용")] Vector3 currentPos;
     [SerializeField][Tooltip("현재 Velocity Debug용")] Vector3 currentVelocity;
 
@@ -237,7 +239,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         /*사망시 로직*/
-        if (isDead)
+        if (isDead && !isDeadChecked)
             Dead();
 
         if (!isInjured)
@@ -422,6 +424,7 @@ public class PlayerController : MonoBehaviour
             ResotreLastRail();
         rb.AddForce(slidDownSpeed * Vector3.down, ForceMode.Impulse);
         isDead = false;
+        isDeadChecked = true;
     }
     #endregion
 
