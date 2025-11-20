@@ -9,7 +9,7 @@ public class MapPooling : MonoBehaviour
     private GameObject[] normalMaps;
     [SerializeField]
     private GameObject[] hardMaps;
-   
+
     //각각의 프리팹들을 저장하는 리스트
     private List<GameObject> easyMappool = new List<GameObject>();
     private List<GameObject> normalMappool = new List<GameObject>();
@@ -78,37 +78,24 @@ public class MapPooling : MonoBehaviour
 
 
     #region"Pooling"
-    private void InitPool() // 프리팹 받아온걸 생성 후 비활성화, 풀에 넣기
+    private void InitPool() 
     {
-        for (int i = 0; i < easyMaps.Length; i++) // 받아온 프리팹 길이만큼 반복
+        SetPool(easyMaps, easyMappool);
+        SetPool(normalMaps, normalMappool);
+        SetPool(hardMaps, hardMappool);
+    }
+    private void SetPool(GameObject[] gameObjects, List<GameObject> list)// 프리팹 받아온걸 생성 후 비활성화, 풀에 넣기
+    {
+        for (int i = 0; i < gameObjects.Length; i++) // 받아온 프리팹 길이만큼 반복
         {
-            for(int j = 0; j < 2; j++)
+            for (int j = 0; j < 2; j++)
             {
                 GameObject obj = Instantiate(easyMaps[i], transform); // 자식으로 프리팹들 생성후
                 obj.SetActive(false); // 비활성화
-                easyMappool.Add(obj); // 풀에 넣기
+                list.Add(obj); // 풀에 넣기
                 SaveInitialStates(obj);
             }
-        }
-        for (int i = 0; i < normalMaps.Length; i++)
-        {
-            for (int j = 0; j < 2; j++)
-            {
-                GameObject obj = Instantiate(normalMaps[i], transform);
-                obj.SetActive(false);
-                normalMappool.Add(obj);
-                SaveInitialStates(obj);
-            }
-        }
-        for (int i = 0; i < hardMaps.Length; i++)
-        {
-            for (int j = 0; j < 2; j++)
-            {
-                GameObject obj = Instantiate(hardMaps[i], transform);
-                obj.SetActive(false);
-                hardMappool.Add(obj);
-                SaveInitialStates(obj);
-            }
+
         }
     }
     #endregion
@@ -140,62 +127,46 @@ public class MapPooling : MonoBehaviour
     GameObject GetRandomeMap() // 랜덤으로 뽑기
     {
         RandMap.Clear();
-        int level = Mathf.FloorToInt(player.transform.position.z / 360f); // 거리 500마다 레벨 증가
+        int level = Mathf.FloorToInt(player.transform.position.z / 360f); // 거리 360마다 레벨 증가
         level = Mathf.Clamp(level, 1, 5);
 
         switch (level)
         {
             case 1:
-                SetEasyMap();
+                SetMap(easyMappool);
                 break;
             case 2:
-                SetEasyMap();
-                SetNormalMap();
+                SetMap(easyMappool);
+                SetMap(normalMappool);
                 break;
             case 3:
-                SetNormalMap();
+                SetMap(normalMappool);
                 break;
             case 4:
-                SetNormalMap();
-                SetHardMap();
+                SetMap(normalMappool);
+                SetMap(hardMappool);
                 break;
             case 5:
-                SetHardMap();
+                SetMap(hardMappool);
                 break;
         }
-        if (RandMap.Count > 0) // 만약 비활성화 된것이 1개라도 있을때
+        if (RandMap.Count > 0) //리스트에 1개라도 있을때
         {
             int rand = Random.Range(0, RandMap.Count); // 비활성화 된 오브젝트를 담은 리스트의 길이값 사이 중 하나를 뽑아
             return RandMap[rand]; // 반환시킨다
         }
 
-        return null; // 모든것이 활성화 되어있다면 null을 반환한다
+        return null; // 그외 null을 반환한다
     }
     #endregion
 
     #region"DeactiveList"
-    private void SetEasyMap()
+    private void SetMap(List<GameObject> list)
     {
-        foreach (GameObject obj in easyMappool) // mapPool길이 만큼 돌면서
+        foreach (GameObject obj in list) // mapPool길이 만큼 돌면서
         {
             if (!obj.activeInHierarchy) // 비활성화 된것들을
                 RandMap.Add(obj); // 리스트에 담는다
-        }
-    }
-    private void SetNormalMap()
-    {
-        foreach (GameObject obj in normalMappool)
-        {
-            if (!obj.activeInHierarchy)
-                RandMap.Add(obj);
-        }
-    }
-    private void SetHardMap()
-    {
-        foreach (GameObject obj in hardMappool)
-        {
-            if (!obj.activeInHierarchy)
-                RandMap.Add(obj);
         }
     }
     #endregion
