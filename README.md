@@ -32,7 +32,7 @@
 |<img src="https://avatars.githubusercontent.com/u/115542242?v=4" width="100"/>|  
 |[곽민진](https://github.com/parkha6)|  
 ##프레임 워크  
-![프레임워크 1]()  
+![프레임워크 1](https://raw.githubusercontent.com/lachy75127873-oss/Samsung-Shareholders-Anger/14e7733c6fb04488e09c7d070c3cbaa2fa09843d/ReadMeScreenShot/frameWork.jpg)  
 ![프레임워크 2]()  
 ![프레임워크 3]()  
 ![프레임워크 4]()  
