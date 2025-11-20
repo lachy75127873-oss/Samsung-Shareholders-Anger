@@ -155,7 +155,7 @@ public class GameSceneUI : MonoBehaviour
             Debug.Log(bestScore);
             float floPercent = (float)currentScore / bestScore;
             Debug.Log(floPercent);
-            if (floPercent <= 0)
+            if (floPercent <= 0.5)
             {
                 endIcon.sprite = lowerIcon;
                 EndPercent.color = Color.red;
