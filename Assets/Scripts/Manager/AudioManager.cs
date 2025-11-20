@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -45,33 +46,54 @@ public class AudioManager : MonoBehaviour
             { AudioMixerGroupName.BGM, bgm},
             { AudioMixerGroupName.SFX, sfx},
         };
+    }
 
-        foreach(var key in UserAudios.Keys)
+    public void Start()
+    {
+        foreach (var key in UserAudios.Keys)
         {
             var s_key = key.ToString();
+
+            // 키가 있다면
             if (PlayerPrefs.HasKey(s_key))
             {
-                UserAudios[key].audioMixer.SetFloat(
-                    s_key, PlayerPrefs.GetFloat(s_key, default)
-                );
+                var value = PlayerPrefs.GetFloat(s_key);
+                // 키에 저장된 값 확인
+                //Debug.Log($"PlayerPrefs.GetFloat({s_key}): {value}");
+                // 저장된 값을 오디오 믹서에 세팅
+                UserAudios[key].audioMixer.SetFloat(s_key, value);
+                //UserAudios[key].audioMixer.GetFloat(s_key, out var current);
+                // 저장 확인
+                //Debug.Log($"UserAudios[{key}].audioMixer.GetFloat: {current}");
             }
         }
     }
 
     #region UserUIAdjust
-    public void SetVolume(AudioMixerGroupName name, float value)
+    public void SetVolume(AudioMixerGroupName key, float value)
     {
-        UserAudios[name].audioMixer.SetFloat(name.ToString(), value);
-        PlayerPrefs.SetFloat(name.ToString(), value);
+        var s_key = key.ToString();
+
+        if (UserAudios.ContainsKey(key))
+        {
+            UserAudios[key].audioMixer.SetFloat(s_key, value);
+            PlayerPrefs.SetFloat(s_key, value);
+        }
+        else
+        {
+            Debug.Log($"Can't Find AudioMixerGroup: {key}");
+        }
     }
 
-    public float GetVolume(AudioMixerGroupName name)
+    public float GetVolume(AudioMixerGroupName key)
     {
-        if (UserAudios[name].audioMixer.GetFloat(nameof(name), out var volume))
+        var s_key = key.ToString();
+
+        if (UserAudios[key].audioMixer.GetFloat(s_key, out var volume))
             return volume;
         else
         {
-            Debug.Log($"Can't Find AudioMixerGroup: {name}");
+            Debug.Log($"Can't Find AudioMixerGroup: {key}");
             return 0f;
         }
     }

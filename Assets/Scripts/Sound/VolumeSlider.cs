@@ -11,6 +11,7 @@ public class VolumeSlider : MonoBehaviour
     private void Start()
     {
         audioManager = ManagerRoot.Instance.audioManager;
+        slider.value = audioManager.GetVolume(groupName);
     }
     private void OnEnable()
     {
@@ -31,7 +32,6 @@ public class VolumeSlider : MonoBehaviour
         slider = GetComponent<Slider>();
         slider.minValue = -30;
         slider.maxValue = 5;
-        slider.value = audioManager.GetVolume(groupName);
     }
 #endif
 }
