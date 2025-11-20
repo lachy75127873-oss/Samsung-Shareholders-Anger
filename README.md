@@ -1,6 +1,6 @@
 # Samsung-Shareholders-Anger 
 ##내일배움캠프 Unity 게임개발 숙련 프로젝트  
-![Title.jpg]()  
+![Title.jpg](https://raw.githubusercontent.com/lachy75127873-oss/Samsung-Shareholders-Anger/14e7733c6fb04488e09c7d070c3cbaa2fa09843d/ReadMeScreenShot/Title.jpg)  
 <삼전런: 주주들의 분노>는 Subway Surfers를 레퍼런스로 하여 만들어진 3D액션 러닝게임입니다.  
 ##개발환경  
 * Engine: Unity 2022.3.62f2
