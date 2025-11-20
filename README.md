@@ -12,22 +12,22 @@
 | <img src="https://avatars.githubusercontent.com/u/233679171?v=4" width="100"/> |  
 | [백광렬](https://github.com/kwanggod) |  
 
-|플레이어 & 사운드매니저|  
+|캐릭터&사운드|  
 |:---:|  
 |<img src="https://avatars.githubusercontent.com/u/230603154?v=4" width="100"/>|  
 |[김은서](https://github.com/kimeunseo-work)|  
 
-|통합 시스템 구조 관리 & 매니저 관리|  
+|시스템 구조|  
 |:---:|  
 |<img src="https://avatars.githubusercontent.com/u/229876104?v=4" width="100"/>|  
 |[차동욱](https://github.com/lachy75127873-oss)|  
 
-|장애물 & 아이템|  
+|장애물&아이템|  
 |:---:|  
 |<img src="https://avatars.githubusercontent.com/u/229876104?v=4" width="100"/>|  
 |[김종원](https://github.com/lachy75127873-oss)|  
 
-|카메라 & 환경연출|  
+|카메라&연출|  
 |:---:|  
 |<img src="https://avatars.githubusercontent.com/u/229876104?v=4" width="100"/>|  
 |[양현진](https://github.com/lachy75127873-oss)|  
