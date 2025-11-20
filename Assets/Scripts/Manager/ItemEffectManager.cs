@@ -55,7 +55,6 @@ public class ItemEffectManager
     {
         int coinValue = GetValue(itemData, 0, 1);
         ManagerRoot.Instance.scoreManager.totalScore += coinValue;
-        Debug.Log("500점 추가");
     }
 
     private void ApplyBuff(ItemData itemData)
