@@ -41,7 +41,9 @@
 ![프레임워크 1](https://raw.githubusercontent.com/lachy75127873-oss/Samsung-Shareholders-Anger/14e7733c6fb04488e09c7d070c3cbaa2fa09843d/ReadMeScreenShot/frameWork.jpg)  
 ![프레임워크 2](https://github.com/lachy75127873-oss/Samsung-Shareholders-Anger/blob/main/ReadMeScreenShot/frameWork2.jpg?raw=true)  
 ![프레임워크 3](https://github.com/lachy75127873-oss/Samsung-Shareholders-Anger/blob/main/ReadMeScreenShot/frameWork3.jpg?raw=true)  
-![프레임워크 4](https://github.com/lachy75127873-oss/Samsung-Shareholders-Anger/blob/main/ReadMeScreenShot/frameWork4.jpg?raw=true)  
+![프레임워크 4](https://github.com/lachy75127873-oss/Samsung-Shareholders-Anger/blob/main/ReadMeScreenShot/frameWork4.jpg?raw=true)  .
+## 구조도
+![구조도](https://github.com/lachy75127873-oss/Samsung-Shareholders-Anger/blob/main/ReadMeScreenShot/%EA%B5%AC%EC%A1%B0%EB%8F%84.jpg?raw=true)
 ## 에셋 저작권  
 [Untitled UI – FREE Figma UI kit and design system v2.0](https://www.figma.com/community/file/1020079203222518115)  
 [NEWS INTRO BGM - 송원종](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13372617&menuNo=200020)  
