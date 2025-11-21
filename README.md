@@ -12,22 +12,22 @@
 | <img src="https://avatars.githubusercontent.com/u/233679171?v=4" width="100"/> |  
 | [백광렬](https://github.com/kwanggod) |  
 
-|플레이어 & 사운드매니저|  
+|캐릭터&사운드|  
 |:---:|  
 |<img src="https://avatars.githubusercontent.com/u/230603154?v=4" width="100"/>|  
 |[김은서](https://github.com/kimeunseo-work)|  
 
-|통합 시스템 구조 관리 & 매니저 관리|  
+|시스템 구조|  
 |:---:|  
 |<img src="https://avatars.githubusercontent.com/u/229876104?v=4" width="100"/>|  
 |[차동욱](https://github.com/lachy75127873-oss)|  
 
-|장애물 & 아이템|  
+|장애물&아이템|  
 |:---:|  
 |<img src="https://avatars.githubusercontent.com/u/229876104?v=4" width="100"/>|  
 |[김종원](https://github.com/lachy75127873-oss)|  
 
-|카메라 & 환경연출|  
+|카메라&연출|  
 |:---:|  
 |<img src="https://avatars.githubusercontent.com/u/229876104?v=4" width="100"/>|  
 |[양현진](https://github.com/lachy75127873-oss)|  
@@ -41,7 +41,9 @@
 ![프레임워크 1](https://raw.githubusercontent.com/lachy75127873-oss/Samsung-Shareholders-Anger/14e7733c6fb04488e09c7d070c3cbaa2fa09843d/ReadMeScreenShot/frameWork.jpg)  
 ![프레임워크 2](https://github.com/lachy75127873-oss/Samsung-Shareholders-Anger/blob/main/ReadMeScreenShot/frameWork2.jpg?raw=true)  
 ![프레임워크 3](https://github.com/lachy75127873-oss/Samsung-Shareholders-Anger/blob/main/ReadMeScreenShot/frameWork3.jpg?raw=true)  
-![프레임워크 4](https://github.com/lachy75127873-oss/Samsung-Shareholders-Anger/blob/main/ReadMeScreenShot/frameWork4.jpg?raw=true)  
+![프레임워크 4](https://github.com/lachy75127873-oss/Samsung-Shareholders-Anger/blob/main/ReadMeScreenShot/frameWork4.jpg?raw=true)  .
+## 구조도
+![구조도](https://github.com/lachy75127873-oss/Samsung-Shareholders-Anger/blob/main/ReadMeScreenShot/%EA%B5%AC%EC%A1%B0%EB%8F%84.jpg?raw=true)
 ## 에셋 저작권  
 [Untitled UI – FREE Figma UI kit and design system v2.0](https://www.figma.com/community/file/1020079203222518115)  
 [NEWS INTRO BGM - 송원종](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13372617&menuNo=200020)  
